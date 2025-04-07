@@ -12,6 +12,8 @@ import swaggerUi from "swagger-ui-express";
 import { swaggerSpec } from "./swagger";
 // Config
 import { corsConfig } from "./types/Cors.type";
+import { errorHandler } from "./middleware/logger";
+import { logger } from "./config/logger.config";
 
 dotenv.config();
 
@@ -19,9 +21,10 @@ const app = express();
 // PORT
 const PORT = process.env.PORT || 3000;
 // Base config
-app.use(morgan("tiny"));
+app.use(morgan("tiny", { stream: { write: (message) => logger.http(message.trim()) } }));
 app.use(cors(corsConfig));
 app.use(helmet());
+app.use(errorHandler);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // Routes
@@ -38,23 +41,21 @@ process.on("SIGTERM", gracefulShutdown);
 process.on("SIGINT", gracefulShutdown);
 
 async function gracefulShutdown(signal: string) {
-  console.log(`Received ${signal}. Starting graceful shutdown...`);
+  logger.info(`Received ${signal}. Starting graceful shutdown...`);
 
   try {
-    // Close the HTTP server
     server.close(() => {
-      console.log("HTTP server closed");
+      logger.info('HTTP server closed');
     });
 
     await disconnectDB();
-    console.log("Database connection closed");
-    // Add appropriate timeout for existing connections to finish
+    logger.info('Database connection closed');
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    console.log("Graceful shutdown completed");
+    logger.info('Graceful shutdown completed');
     process.exit(0);
   } catch (error) {
-    console.error("Error during graceful shutdown:", error);
+    logger.error('Error during graceful shutdown:', error);
     process.exit(1);
   }
 }
