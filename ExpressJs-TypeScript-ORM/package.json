@@ -6,7 +6,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon --watch src --exec ts-node src/app.ts",
     "build": "npx tsc --build",
-    "start": "node dist/app.js"
+    "start": "node dist/app.js",
+    "deploy" : "pm2 start dist/app.js --name expressjs-typescript-orm --watch --ignore-watch node_modules --env production"
   },
   "keywords": [],
   "author": "",
@@ -20,6 +21,7 @@
     "mongoose": "^8.13.2",
     "morgan": "^1.10.0",
     "nodemon": "^3.1.9",
+    "pm2": "^6.0.5",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1"
   },
