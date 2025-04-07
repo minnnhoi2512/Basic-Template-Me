@@ -1,17 +1,14 @@
 import mongoose from "mongoose";
 import { ErrorType } from "../types/Error.type";
 import statusCode from "../constants/statusCode";
-import e from "express";
 
-const connectDB = async (): Promise<any> => {
+let connection: typeof mongoose | null = null;
+
+export const connectDB = async (): Promise<typeof mongoose | null> => {
   try {
-    const connect = await mongoose.connect(process.env.MONGO_URL as string);
+    connection = await mongoose.connect(process.env.MONGO_URL as string);
     console.log("MongoDB connected successfully");
-    console.log(
-      "Server Time Zone:",
-      Intl.DateTimeFormat().resolvedOptions().timeZone
-    );
-    return connect;
+    return connection;
   } catch (error: any) {
     console.log("Failed to connect to MongoDB", error.message);
     throw new ErrorType(
@@ -24,4 +21,10 @@ const connectDB = async (): Promise<any> => {
   }
 };
 
-export default connectDB;
+export const getConnection = (): typeof mongoose | null => connection;
+export const disconnectDB = async (): Promise<void> => {
+  if (connection) {
+    await connection.disconnect();
+    connection = null;
+  }
+};

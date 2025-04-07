@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon --watch src --exec ts-node app.ts",
+    "dev": "nodemon --watch src --exec ts-node src/app.ts",
     "build": "npx tsc --build",
     "start": "node dist/app.js"
   },
