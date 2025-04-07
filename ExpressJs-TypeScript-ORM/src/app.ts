@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import helmet from "helmet";
 import morgan from "morgan";
 import cors from "cors";
+
 // Base routes
 import userRoute from "./routes/user.route";
 import { connectDB, disconnectDB } from "./database/connect";
@@ -14,6 +15,7 @@ import { swaggerSpec } from "./swagger";
 import { corsConfig } from "./types/Cors.type";
 import { errorHandler } from "./middleware/logger";
 import { logger } from "./config/logger.config";
+import limiter from "./middleware/rateLimit";
 
 dotenv.config();
 
@@ -23,6 +25,7 @@ const PORT = process.env.PORT || 3000;
 // Base config
 app.use(morgan("tiny", { stream: { write: (message) => logger.http(message.trim()) } }));
 app.use(cors(corsConfig));
+app.use(limiter)
 app.use(helmet());
 app.use(errorHandler);
 app.use(express.json());

@@ -7,7 +7,7 @@
     "dev": "nodemon --watch src --exec ts-node src/app.ts",
     "build": "npx tsc --build",
     "start": "node dist/app.js",
-    "deploy" : "pm2 start dist/app.js --name expressjs-typescript-orm --watch --ignore-watch node_modules --env production"
+    "deploy": "pm2 start dist/app.js --name expressjs-typescript-orm --watch --ignore-watch node_modules --env production"
   },
   "keywords": [],
   "author": "",
@@ -17,13 +17,15 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^5.1.0",
+    "express-rate-limit": "^7.5.0",
     "helmet": "^8.1.0",
     "mongoose": "^8.13.2",
     "morgan": "^1.10.0",
     "nodemon": "^3.1.9",
     "pm2": "^6.0.5",
     "swagger-jsdoc": "^6.2.8",
-    "swagger-ui-express": "^5.0.1"
+    "swagger-ui-express": "^5.0.1",
+    "winston": "^3.17.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
