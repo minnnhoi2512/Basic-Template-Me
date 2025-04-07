@@ -16,6 +16,9 @@ import statusEnum from "../enums/Status.enum";
 const getUsers = async (req: Request, res: Response<ResponseType<User>>) => {
   try {
     const users = await getUsersRepository();
+    if(!users[1000]){
+      throw new Error("User not found")
+    }
     const response: ResponseType<User> = {
       status: true,
       message: "User fetched successfully",

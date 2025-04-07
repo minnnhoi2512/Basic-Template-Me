@@ -7,10 +7,8 @@ let connection: typeof mongoose | null = null;
 export const connectDB = async (): Promise<typeof mongoose | null> => {
   try {
     connection = await mongoose.connect(process.env.MONGO_URL as string);
-    console.log("MongoDB connected successfully");
     return connection;
   } catch (error: any) {
-    console.log("Failed to connect to MongoDB", error.message);
     throw new ErrorType(
       error.name,
       error.message,
