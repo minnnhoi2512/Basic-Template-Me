@@ -24,10 +24,6 @@ const debugApp = debug("app"); // Usage: DEBUG=app node src/index.js to enable
 if (cluster.isPrimary && !isDev) {
   logger.info(`Primary process ${process.pid} is running`);
   debugApp(`Starting primary process with ${numCPUs} CPU cores`);
-  const unusedVar = 123; // Biến không dùng
-  const unusedVar1 = 123; // Biến không dùng
-  const unusedVar2 = 123; // Biến không dùng
-  const unusedVar3 = 123; // Biến không dùng
   // Fork workers for each CPU core
   for (let i = 0; i < numCPUs; i++) {
     cluster.fork();

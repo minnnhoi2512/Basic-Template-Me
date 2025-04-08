@@ -12,7 +12,15 @@
     "debug": "cross-env NODE_ENV=development nodemon --exec 'node --inspect -r ts-node/register src/app.ts'",
     "debug:prod": "cross-env NODE_ENV=production node --inspect dist/app.js",
     "lint": "eslint src/**/*.ts",
-    "lint:fix": "eslint src/**/*.ts --fix"
+    "lint:fix": "eslint src/**/*.ts --fix",
+    "lint-staged": "lint-staged",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "src/**/*.{js,ts}": [
+      "eslint src/**/*.ts --fix",
+      "git add"
+    ]
   },
   "keywords": [],
   "author": "",
@@ -57,6 +65,8 @@
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-react": "^7.37.5",
     "globals": "^16.0.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.5.0",
     "nodemon": "^3.1.9",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.2",
