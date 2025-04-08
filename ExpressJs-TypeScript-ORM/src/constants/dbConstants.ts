@@ -6,4 +6,5 @@ export const retryTime: number = 10; // Attempt time to connect database
 export const eachTimeTry: number = 100; // Trying time for each attempt
 export const maxTimeTry: number = 3000; // Max trying time for connect database
 export const defaultRedisPort: number = 6379; // Default Redis port is 6379
+export const defaultServerPort: number = 3000; // Default Redis port is 6379
 export const ttlInSecondsGlobal: number = 3600;
