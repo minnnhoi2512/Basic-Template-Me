@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon --watch src --exec ts-node src/app.ts",
+    "dev": "cross-env NODE_ENV=development nodemon --watch src --exec ts-node src/app.ts",
     "build": "npx tsc --build",
     "start": "cross-env NODE_ENV=production node dist/app.js",
     "deploy": "pm2 start dist/app.js --name expressjs-typescript-orm --watch --ignore-watch node_modules --env production",
