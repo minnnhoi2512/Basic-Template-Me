@@ -5,6 +5,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import ms from "ms";
+import { redisClient } from "../config/redis.config";
 
 dotenv.config();
 /**
@@ -22,7 +23,7 @@ export async function gracefulShutdown(
     server.close(() => {
       logger.info("HTTP server closed");
     });
-
+    await redisClient.disconnect();
     await disconnectDB();
     logger.info("Database connection closed");
     await new Promise((resolve) => setTimeout(resolve, 1000));

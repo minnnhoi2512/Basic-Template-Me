@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { logger } from '../config/logger.config';
 import { AppError } from '../types/AppError.type';
+import statusCode from '../constants/statusCode';
 
 export const errorHandler = (
   err: AppError,
@@ -8,7 +9,7 @@ export const errorHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  err.statusCode = err.statusCode || 500;
+  err.statusCode = err.statusCode || statusCode.INTERNAL_SERVER_ERROR;
   err.status = err.status || 'error';
 
   if (process.env.NODE_ENV === 'development') {
@@ -31,7 +32,7 @@ export const errorHandler = (
     } else {
       // Programming or unknown errors
       logger.error('ERROR 💥', err);
-      res.status(500).json({
+      res.status(statusCode.INTERNAL_SERVER_ERROR).json({
         status: 'error',
         message: 'Something went wrong!'
       });

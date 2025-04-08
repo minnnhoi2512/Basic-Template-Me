@@ -2,8 +2,9 @@
 import express from "express";
 import dotenv from "dotenv";
 // Config
+import { redisClient } from "./config/redis.config";
 import { logger } from "./config/logger.config";
-import { connectDB, disconnectDB } from "./database/connect";
+import { connectDB } from "./database/connect";
 import { configureMiddleware } from "./middleware/middleware";
 import { configureRoutes } from "./routes/middleware.route";
 import { gracefulShutdown } from "./utils/utils";
@@ -22,6 +23,7 @@ configureRoutes(app);
 const server = app.listen(PORT, async () => {
   try {
     await connectDB();
+    await redisClient.connect();
     logger.info(`Server is running on port ${PORT}`);
   } catch (error) {
     logger.error('Failed to start server:', error);
