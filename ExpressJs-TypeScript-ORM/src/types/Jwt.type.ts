@@ -1,7 +1,7 @@
 import { User } from "../interfaces/User.interface";
 
-export interface JwtPayload {
-    user : User
-    iat?: number;
-    exp?: number;
-  }
+// Define the JwtPayload to match the actual token payload
+export interface JwtPayload extends User {
+  iat?: number;
+  exp?: number;
+}

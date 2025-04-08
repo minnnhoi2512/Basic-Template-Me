@@ -7,14 +7,12 @@ import {
   createUserRepository,
   getUserByIdRepository,
   getUsersRepository,
-  loginUserRepositoryByEmail,
   updateStatusUserRepository,
   updateUserOneFieldRepository,
   updateUserRepository,
 } from "../repositories/user.repository";
 import statusEnum from "../enums/Status.enum";
 import { validateEmail, validatePassword } from "../validation/validator";
-import { comparePassword, signToken } from "../utils/utils";
 
 const getUsers = async (req: Request, res: Response<ResponseType<User>>) => {
   try {
@@ -353,44 +351,7 @@ const updateStatusUser = async (
   }
 };
 
-const loginUser = async (req: Request, res: Response<ResponseType<User>>) => {
-  try {
-    const { email, password } = req.body;
-    const user = await loginUserRepositoryByEmail(email);
-    if (!user) {
-      res.status(statusCode.NOT_FOUND).json({
-        status: false,
-        message: "User not found",
-      });
-      return;
-    }
-    const isPasswordValid = await comparePassword(
-      password,
-      user.password || ""
-    );
-    if (!isPasswordValid) {
-      res.status(statusCode.BAD_REQUEST).json({
-        status: false,
-        message: "Wrong password",
-      });
-      return;
-    }
-    const token = signToken(user);
-    const response: ResponseType<User> = {
-      status: true,
-      message: "Login user successfully",
-      token: token,
-    };
-    res.status(statusCode.OK).json(response);
-  } catch (error: any) {
-    const response: ResponseType<User> = {
-      status: false,
-      message: "Failed to login",
-      error: (error as ErrorType) ? error.message : "Internal server error",
-    };
-    res.status(statusCode.INTERNAL_SERVER_ERROR).json(response);
-  }
-};
+
 export {
   getUsers,
   createUser,
@@ -398,5 +359,4 @@ export {
   updateUserById,
   updateUserOneField,
   updateStatusUser,
-  loginUser,
 };
