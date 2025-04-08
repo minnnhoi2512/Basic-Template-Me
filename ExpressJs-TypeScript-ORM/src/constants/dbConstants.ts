@@ -1,0 +1,9 @@
+export const maxPoolSize: number = 10; // Maximum number of connections in the pool
+export const minPoolSize: number = 2; // Minimum number of connections to keep open
+export const connectTimeoutMS: number = 10000; // Timeout for initial connection (10 seconds)
+export const socketTimeoutMS: number = 45000; // Timeout for socket inactivity (45 seconds)
+export const retryTime: number = 10;
+export const eachTimeTry: number = 100;
+export const maxTimeTry: number = 3000;
+export const defaultRedisPort: number = 6379; // Default Redis port is 6379
+export const ttlInSecondsGlobal: number = 3600;

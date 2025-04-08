@@ -1,6 +1,14 @@
+// src/config/redis.config.ts
 import { createClient, RedisClientType } from "redis";
 import { logger } from "./logger.config";
-
+import {
+  connectTimeoutMS,
+  defaultRedisPort,
+  eachTimeTry,
+  maxTimeTry,
+  retryTime,
+  ttlInSecondsGlobal,
+} from "../constants/dbConstants";
 class RedisClient {
   private client: RedisClientType;
   private isConnected: boolean = false;
@@ -8,14 +16,28 @@ class RedisClient {
   constructor() {
     const port = process.env.PORT_REDIS
       ? parseInt(process.env.PORT_REDIS, 10)
-      : 17053;
+      : defaultRedisPort;
+
+    // Validate port
+    if (isNaN(port)) {
+      logger.error("Invalid Redis port specified in PORT_REDIS");
+      throw new Error("Invalid Redis port");
+    }
 
     this.client = createClient({
-      username: process.env.REDIS_US || "default",
-      password: process.env.REDIS_PW || "*******",
+      username: process.env.REDIS_US || "default", // Redis username
+      password: process.env.REDIS_PW, // Redis password (loaded from env)
       socket: {
-        host: process.env.REDIS_URL || "localhost",
-        port,
+        host: process.env.REDIS_HOST || "localhost", // Redis host
+        port, // Redis port
+        reconnectStrategy: (retries: number) => {
+          if (retries > retryTime) {
+            logger.error("Too many Redis reconnection attempts. Giving up.");
+            return new Error("Too many retries");
+          }
+          return Math.min(retries * eachTimeTry, maxTimeTry); // Exponential backoff: 100ms, 200ms, ..., max 3s
+        },
+        connectTimeout: connectTimeoutMS,
       },
     });
 
@@ -59,7 +81,7 @@ class RedisClient {
   async set(
     key: string,
     value: string,
-    ttlInSeconds: number = 3600
+    ttlInSeconds: number = ttlInSecondsGlobal
   ): Promise<void> {
     try {
       await this.client.setEx(key, ttlInSeconds, value);
