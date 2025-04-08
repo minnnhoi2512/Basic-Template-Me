@@ -17,7 +17,6 @@ export async function gracefulShutdown(
   server: Server,
   signal: string
 ): Promise<void> {
-  logger.info(`Received ${signal}. Starting graceful shutdown...`);
 
   try {
     server.close(() => {

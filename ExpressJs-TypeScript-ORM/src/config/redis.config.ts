@@ -1,4 +1,3 @@
-// src/config/redis.config.ts
 import { createClient, RedisClientType } from "redis";
 import { logger } from "./logger.config";
 import {
@@ -42,17 +41,17 @@ class RedisClient {
     });
 
     this.client.on("error", (err) => {
-      logger.error("Redis Client Error:", err);
+      //   logger.error("Redis Client Error:", err);
       this.isConnected = false;
     });
 
     this.client.on("connect", () => {
-      logger.info("Connected to Redis");
+      //   logger.info("Connected to Redis");
       this.isConnected = true;
     });
 
     this.client.on("end", () => {
-      logger.info("Disconnected from Redis");
+      //   logger.info("Disconnected from Redis");
       this.isConnected = false;
     });
   }

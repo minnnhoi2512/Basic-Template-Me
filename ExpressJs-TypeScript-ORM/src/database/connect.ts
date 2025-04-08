@@ -17,6 +17,7 @@ export const connectDB = async (): Promise<typeof mongoose | null> => {
       minPoolSize: minPoolSize, 
       connectTimeoutMS: connectTimeoutMS,
       socketTimeoutMS: socketTimeoutMS,
+      autoIndex: process.env.NODE_ENV !== "production",
     });
     return connection;
   } catch (error: any) {

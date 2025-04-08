@@ -36,4 +36,7 @@ const UserSchema = new mongoose.Schema(
   { timestamps: true } // Correct placement of the timestamps option
 );
 
+// Create an index on the email field
+// UserSchema.index({ email: 1 }, { unique: true });
+
 export default mongoose.model("User", UserSchema);

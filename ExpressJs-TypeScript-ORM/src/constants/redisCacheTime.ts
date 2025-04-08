@@ -1,1 +1,1 @@
-export const cacheTime = 3600;
+export const cacheTime: number = 3600;
