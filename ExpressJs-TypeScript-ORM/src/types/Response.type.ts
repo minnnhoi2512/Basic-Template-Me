@@ -5,4 +5,5 @@ export type ResponseType<T> = {
   message: string;
   data?: T | T[];
   error?: string | ErrorType;
+  token?: string;
 };

@@ -7,18 +7,18 @@ import {
   createUserRepository,
   getUserByIdRepository,
   getUsersRepository,
+  loginUserRepositoryByEmail,
   updateStatusUserRepository,
   updateUserOneFieldRepository,
   updateUserRepository,
 } from "../repositories/user.repository";
 import statusEnum from "../enums/Status.enum";
+import { validateEmail, validatePassword } from "../validation/validator";
+import { comparePassword, signToken } from "../utils/utils";
 
 const getUsers = async (req: Request, res: Response<ResponseType<User>>) => {
   try {
     const users = await getUsersRepository();
-    if(!users[1000]){
-      throw new Error("User not found")
-    }
     const response: ResponseType<User> = {
       status: true,
       message: "User fetched successfully",
@@ -36,6 +36,28 @@ const getUsers = async (req: Request, res: Response<ResponseType<User>>) => {
 };
 const createUser = async (req: Request, res: Response<ResponseType<User>>) => {
   try {
+    const { password, email } = req.body;
+    if (password && password.trim() !== "") {
+      // Validate password format
+      if (!validatePassword(password)) {
+        res.status(statusCode.BAD_REQUEST).json({
+          status: false,
+          message:
+            "At least 6 characters, 1 letter and 1 number, no special characters",
+        });
+        return;
+      }
+    }
+    if (email && email.trim() !== "") {
+      // Validate email format
+      if (!validateEmail(email)) {
+        res.status(statusCode.BAD_REQUEST).json({
+          status: false,
+          message: "Invalid email format",
+        });
+        return;
+      }
+    }
     const user: User = req.body;
     const newUser = await createUserRepository(user);
     const response: ResponseType<User> = {
@@ -109,8 +131,50 @@ const updateUserById = async (
 ) => {
   try {
     const { id } = req.params;
-    const user: User = req.body;
-    const updatedUser = await updateUserRepository({ ...user, _id: id });
+    const { name, password, email } = req.body;
+
+    // Prepare the update object by excluding null or empty fields
+    const updateData: Partial<User> = {};
+    if (name && name.trim() !== "") updateData.name = name;
+    if (password && password.trim() !== "") {
+      // Validate password format
+      if (!validatePassword(password)) {
+        res.status(statusCode.BAD_REQUEST).json({
+          status: false,
+          message:
+            "At least 6 characters, 1 letter and 1 number, no special characters",
+        });
+        return;
+      }
+      updateData.password = password;
+    }
+    if (email && email.trim() !== "") {
+      // Validate email format
+      if (!validateEmail(email)) {
+        res.status(statusCode.BAD_REQUEST).json({
+          status: false,
+          message: "Invalid email format",
+        });
+        return;
+      }
+      updateData.email = email;
+    }
+
+    // If no valid fields are provided, return a bad request response
+    if (Object.keys(updateData).length === 0) {
+      res.status(statusCode.BAD_REQUEST).json({
+        status: false,
+        message: "No valid fields provided for update",
+      });
+      return;
+    }
+
+    // Update user
+    const updatedUser = await updateUserRepository({
+      ...updateData,
+      _id: id,
+    } as User);
+
     if (!updatedUser) {
       res.status(statusCode.NOT_FOUND).json({
         status: false,
@@ -118,6 +182,7 @@ const updateUserById = async (
       });
       return;
     }
+
     const response: ResponseType<User> = {
       status: true,
       message: "User updated successfully",
@@ -163,6 +228,24 @@ const updateUserOneField = async (
   try {
     const { id } = req.params;
     const { field, value } = req.body;
+    if (field === "email") {
+      if (!validateEmail(value)) {
+        res.status(statusCode.BAD_REQUEST).json({
+          status: false,
+          message: "Invalid email format",
+        });
+        return;
+      }
+    } else if (field === "password") {
+      if (!validatePassword(value)) {
+        res.status(statusCode.BAD_REQUEST).json({
+          status: false,
+          message:
+            "At least 6 characters, 1 letter and 1 number, no special characters",
+        });
+        return;
+      }
+    }
     const updatedUser = await updateUserOneFieldRepository(id, field, value);
     if (!updatedUser) {
       res.status(statusCode.NOT_FOUND).json({
@@ -269,11 +352,51 @@ const updateStatusUser = async (
     res.status(statusCode.INTERNAL_SERVER_ERROR).json(response);
   }
 };
+
+const loginUser = async (req: Request, res: Response<ResponseType<User>>) => {
+  try {
+    const { email, password } = req.body;
+    const user = await loginUserRepositoryByEmail(email);
+    if (!user) {
+      res.status(statusCode.NOT_FOUND).json({
+        status: false,
+        message: "User not found",
+      });
+      return;
+    }
+    const isPasswordValid = await comparePassword(
+      password,
+      user.password || ""
+    );
+    if (!isPasswordValid) {
+      res.status(statusCode.BAD_REQUEST).json({
+        status: false,
+        message: "Wrong password",
+      });
+      return;
+    }
+    const token = signToken(user);
+    const response: ResponseType<User> = {
+      status: true,
+      message: "Login user successfully",
+      token: token,
+    };
+    res.status(statusCode.OK).json(response);
+  } catch (error: any) {
+    const response: ResponseType<User> = {
+      status: false,
+      message: "Failed to login",
+      error: (error as ErrorType) ? error.message : "Internal server error",
+    };
+    res.status(statusCode.INTERNAL_SERVER_ERROR).json(response);
+  }
+};
 export {
   getUsers,
   createUser,
   getUserById,
   updateUserById,
   updateUserOneField,
-  updateStatusUser
+  updateStatusUser,
+  loginUser,
 };

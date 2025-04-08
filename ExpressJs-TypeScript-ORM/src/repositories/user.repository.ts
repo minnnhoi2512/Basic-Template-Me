@@ -1,6 +1,7 @@
 import { User } from "../interfaces/User.interface";
 import UserModel from "../models/User.model";
 import { ErrorType } from "../types/Error.type";
+import { hashedPasswordString } from "../utils/utils";
 
 const getUsersRepository = async (): Promise<User[]> => {
   try {
@@ -16,7 +17,11 @@ const getUsersRepository = async (): Promise<User[]> => {
 
 const createUserRepository = async (user: User): Promise<User> => {
   try {
-    const newUser = await UserModel.create(user);
+    const hashedPassword = await hashedPasswordString(user.password || "", 10);
+    const newUser = await UserModel.create({
+      ...user,
+      password: hashedPassword,
+    });
     return newUser as User;
   } catch (error: any) {
     throw new ErrorType(error.name, error.message, error.code);
@@ -32,11 +37,16 @@ const getUserByIdRepository = async (id: string): Promise<User | null> => {
   }
 };
 
-const updateUserRepository = async (User: User): Promise<User | null> => {
+const updateUserRepository = async (user: User): Promise<User | null> => {
   try {
-    const updatedUser = await UserModel.findByIdAndUpdate(User._id, User, {
-      new: true,
-    })
+    const hashedPassword = await hashedPasswordString(user.password || "", 10);
+    const updatedUser = await UserModel.findByIdAndUpdate(
+      user._id,
+      { ...user, password: hashedPassword },
+      {
+        new: true,
+      }
+    )
       .select("-password")
       .lean();
     return updatedUser as User;
@@ -51,18 +61,25 @@ const updateUserOneFieldRepository = async (
   value: any
 ): Promise<User | null> => {
   try {
+    // If the field is "password", hash the value
+    const updateData = field === "password"
+      ? { [field]: await hashedPasswordString(value || "", 10) }
+      : { [field]: value };
+
+    // Update the user and exclude the password field in the result
     const updatedUser = await UserModel.findByIdAndUpdate(
       id,
-      { [field]: value },
+      updateData,
       { new: true }
     )
       .select("-password")
       .lean();
+
     return updatedUser as User;
   } catch (error: any) {
     throw new ErrorType(error.name, error.message, error.code);
   }
-}
+};
 
 const updateStatusUserRepository = async (
   id: string,
@@ -80,7 +97,18 @@ const updateStatusUserRepository = async (
   } catch (error: any) {
     throw new ErrorType(error.name, error.message, error.code);
   }
-}
+};
+
+const loginUserRepositoryByEmail = async (
+  email: string
+): Promise<User | null> => {
+  try {
+    const user = await UserModel.findOne({ email: email }).lean();
+    return user as User;
+  } catch (error: any) {
+    throw new ErrorType(error.name, error.message, error.code);
+  }
+};
 export {
   getUsersRepository,
   createUserRepository,
@@ -88,4 +116,5 @@ export {
   updateUserRepository,
   updateUserOneFieldRepository,
   updateStatusUserRepository,
+  loginUserRepositoryByEmail,
 };

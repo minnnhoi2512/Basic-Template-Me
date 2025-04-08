@@ -6,6 +6,7 @@ import { logger } from "./config/logger.config";
 import { connectDB, disconnectDB } from "./database/connect";
 import { configureMiddleware } from "./middleware/middleware";
 import { configureRoutes } from "./routes/middleware.route";
+import { gracefulShutdown } from "./utils/utils";
 
 dotenv.config();
 
@@ -28,25 +29,7 @@ const server = app.listen(PORT, async () => {
   }
 });
 // Graceful shutdown handling
-process.on("SIGTERM", gracefulShutdown);
-process.on("SIGINT", gracefulShutdown);
+process.on("SIGTERM", () => gracefulShutdown(server, "SIGTERM"));
+process.on("SIGINT", () => gracefulShutdown(server, "SIGINT"));
 
-async function gracefulShutdown(signal: string) {
-  logger.info(`Received ${signal}. Starting graceful shutdown...`);
 
-  try {
-    server.close(() => {
-      logger.info("HTTP server closed");
-    });
-
-    await disconnectDB();
-    logger.info("Database connection closed");
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    logger.info("Graceful shutdown completed");
-    process.exit(0);
-  } catch (error) {
-    logger.error("Error during graceful shutdown:", error);
-    process.exit(1);
-  }
-}
