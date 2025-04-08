@@ -40,7 +40,7 @@ class RedisClient {
       },
     });
 
-    this.client.on("error", (err) => {
+    this.client.on("error", () => {
       //   logger.error("Redis Client Error:", err);
       this.isConnected = false;
     });

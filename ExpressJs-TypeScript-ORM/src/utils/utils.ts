@@ -17,14 +17,13 @@ export async function gracefulShutdown(
   server: Server,
   signal: string
 ): Promise<void> {
-
   try {
     server.close(() => {
       logger.info("HTTP server closed");
     });
     await redisClient.disconnect();
     await disconnectDB();
-    logger.info("Database connection closed");
+    logger.info(`Database connection closed with ${signal}`);
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     logger.info("Graceful shutdown completed");

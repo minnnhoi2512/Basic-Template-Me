@@ -2,6 +2,7 @@
   "name": "expressjs-typescript-orm",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "cross-env NODE_ENV=development nodemon --watch src --exec ts-node src/app.ts",
@@ -9,7 +10,9 @@
     "start": "cross-env NODE_ENV=production node dist/app.js",
     "deploy": "pm2 start dist/app.js --name expressjs-typescript-orm --watch --ignore-watch node_modules --env production",
     "debug": "cross-env NODE_ENV=development nodemon --exec 'node --inspect -r ts-node/register src/app.ts'",
-    "debug:prod": "cross-env NODE_ENV=production node --inspect dist/app.js"
+    "debug:prod": "cross-env NODE_ENV=production node --inspect dist/app.js",
+    "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint src/**/*.ts --fix"
   },
   "keywords": [],
   "author": "",
@@ -35,6 +38,7 @@
     "winston": "^3.17.0"
   },
   "devDependencies": {
+    "@eslint/js": "^9.24.0",
     "@types/bcryptjs": "^2.4.6",
     "@types/compression": "^1.7.5",
     "@types/cors": "^2.8.17",
@@ -45,9 +49,17 @@
     "@types/node": "^22.14.0",
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-express": "^4.1.8",
+    "@typescript-eslint/eslint-plugin": "^8.29.1",
+    "@typescript-eslint/parser": "^8.29.1",
     "cross-env": "^7.0.3",
+    "eslint": "^8.57.1",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-react": "^7.37.5",
+    "globals": "^16.0.0",
     "nodemon": "^3.1.9",
     "ts-node": "^10.9.2",
-    "typescript": "^5.8.2"
+    "typescript": "^5.8.2",
+    "typescript-eslint": "^8.29.1"
   }
 }
