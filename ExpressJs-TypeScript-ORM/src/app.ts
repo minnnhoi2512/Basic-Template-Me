@@ -3,7 +3,7 @@ import express from "express";
 import dotenv from "dotenv";
 import cluster from "cluster";
 import os from "os";
-import debug from "debug"; 
+import debug from "debug";
 // Config
 import { redisClient } from "./config/redis.config";
 import { logger } from "./config/logger.config";
@@ -11,7 +11,6 @@ import { connectDB } from "./database/connect";
 import { configureMiddleware } from "./middleware/middleware";
 import { configureRoutes } from "./routes/middleware.route";
 import { gracefulShutdown } from "./utils/utils";
-
 dotenv.config();
 
 // PORT and Environment
@@ -25,12 +24,11 @@ const debugApp = debug("app"); // Usage: DEBUG=app node src/index.js to enable
 if (cluster.isPrimary && !isDev) {
   logger.info(`Primary process ${process.pid} is running`);
   debugApp(`Starting primary process with ${numCPUs} CPU cores`);
-
+  const unusedVar = 123; // Biến không dùng
   // Fork workers for each CPU core
   for (let i = 0; i < numCPUs; i++) {
     cluster.fork();
   }
-
   cluster.on("exit", (worker, code, signal) => {
     logger.warn(
       `Worker ${worker.process.pid} died with code ${code} and signal ${signal}`
