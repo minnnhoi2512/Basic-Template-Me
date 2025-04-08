@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { logger } from '../config/logger.config';
 import { AppError } from '../types/AppError.type';
 import statusCode from '../constants/statusCode';
@@ -7,6 +7,7 @@ export const errorHandler = (
   err: AppError,
   req: Request,
   res: Response,
+  _next : NextFunction
 ) => {
   err.statusCode = err.statusCode || statusCode.INTERNAL_SERVER_ERROR;
   err.status = err.status || 'error';

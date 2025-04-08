@@ -1,5 +1,5 @@
 // Base libraries
-import express from "express";
+import express, { Request, Response } from "express";
 import dotenv from "dotenv";
 import cluster from "cluster";
 import os from "os";

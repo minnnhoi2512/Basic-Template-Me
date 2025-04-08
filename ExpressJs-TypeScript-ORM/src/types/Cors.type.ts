@@ -1,3 +1,5 @@
+import { maxAge } from "../constants/cors";
+
 type CorsOptions = {
   origin: string | string[];
   methods: string[];
@@ -13,5 +15,5 @@ export const corsConfig: CorsOptions = {
   allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
   exposedHeaders: ["Content-Range", "X-Content-Range"],
   credentials: true,
-  maxAge: 3600,
+  maxAge: maxAge,
 };
