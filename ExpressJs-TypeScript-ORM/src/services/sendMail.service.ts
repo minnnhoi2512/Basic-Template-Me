@@ -82,8 +82,8 @@ async function startEmailService() {
   try {
     await redisClient.connect(); // Ensure Redis is connected
     debugEmail("Connected to Redis for email queue");
-
-    while (true) {
+    const isRunning = true;
+    while (isRunning) {
       try {
         // Pop an email task from the Redis queue (blocking operation)
         // @redis/client brPop returns [key, value] or null

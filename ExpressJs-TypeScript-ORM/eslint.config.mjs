@@ -20,6 +20,7 @@ export default [
         clearTimeout: "readonly",
         __dirname: "readonly",
         __filename: "readonly",
+        NodeJS: "readonly"
       },
     },
     plugins: {
