@@ -81,7 +81,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /api/users:
+ * /api/v1/users:
  *   get:
  *     tags:
  *       - Users
@@ -129,7 +129,7 @@ const router = express.Router();
 router.get("/", getUsers);
 /**
  * @swagger
- * /api/users:
+ * /api/v1/users:
  *   post:
  *     tags:
  *       - Users
@@ -210,7 +210,7 @@ router.get("/", getUsers);
 router.post("/", createUser);
 /**
  * @swagger
- * /api/users/{id}:
+ * /api/v1/users/{id}:
  *   get:
  *     tags:
  *       - Users
@@ -276,7 +276,7 @@ router.post("/", createUser);
 router.get("/:id", getUserById);
 /**
  * @swagger
- * /api/users/{id}:
+ * /api/v1/users/{id}:
  *   put:
  *     tags:
  *       - Users
@@ -374,7 +374,7 @@ router.get("/:id", getUserById);
 router.put("/:id", updateUserById);
 /**
  * @swagger
- * /api/users/{id}:
+ * /api/v1/users/{id}:
  *   patch:
  *     tags:
  *       - Users
@@ -465,7 +465,7 @@ router.put("/:id", updateUserById);
 router.patch("/:id", updateUserOneField);
 /**
  * @swagger
- * /api/users/{id}:
+ * /api/v1/users/{id}:
  *   delete:
  *     tags:
  *       - Users
