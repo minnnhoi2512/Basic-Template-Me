@@ -9,7 +9,7 @@ import { redisClient } from "./config/redis.config";
 import { logger } from "./config/logger.config";
 import { connectDB } from "./database/connect";
 import { configureMiddleware } from "./middleware/middleware";
-import { configureRoutes } from "./routes/middleware.route";
+import { configureRoutes } from "./routes/index.route";
 import { gracefulShutdown } from "./utils/utils";
 dotenv.config();
 
