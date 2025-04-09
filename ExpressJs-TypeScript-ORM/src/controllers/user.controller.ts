@@ -14,7 +14,10 @@ import {
 import statusEnum from "../enums/Status.enum";
 import { validateEmail, validatePassword } from "../validation/validator";
 
-const getUsers = async (req: Request, res: Response<ResponseType<User>>) => {
+const getUsers = async (
+  req: Request,
+  res: Response<ResponseType<User>>
+): Promise<void> => {
   try {
     const users = await getUsersRepository();
     const response: ResponseType<User> = {
@@ -23,6 +26,7 @@ const getUsers = async (req: Request, res: Response<ResponseType<User>>) => {
       data: users ? users : [],
     };
     res.status(statusCode.OK).json(response);
+    return;
   } catch (error: any) {
     const response: ResponseType<User> = {
       status: false,
@@ -30,9 +34,13 @@ const getUsers = async (req: Request, res: Response<ResponseType<User>>) => {
       error: (error as ErrorType) ? error.message : "Internal server error",
     };
     res.status(statusCode.INTERNAL_SERVER_ERROR).json(response);
+    return;
   }
 };
-const createUser = async (req: Request, res: Response<ResponseType<User>>) => {
+const createUser = async (
+  req: Request,
+  res: Response<ResponseType<User>>
+): Promise<void> => {
   try {
     const { password, email } = req.body;
     if (password && password.trim() !== "") {
@@ -64,6 +72,7 @@ const createUser = async (req: Request, res: Response<ResponseType<User>>) => {
       data: newUser,
     };
     res.status(statusCode.CREATED).json(response);
+    return;
   } catch (error: any) {
     let response: ResponseType<User>;
 
@@ -93,10 +102,14 @@ const createUser = async (req: Request, res: Response<ResponseType<User>>) => {
       error: error.message || "Internal server error",
     };
     res.status(statusCode.INTERNAL_SERVER_ERROR).json(response);
+    return;
   }
 };
 
-const getUserById = async (req: Request, res: Response<ResponseType<User>>) => {
+const getUserById = async (
+  req: Request,
+  res: Response<ResponseType<User>>
+): Promise<void> => {
   try {
     const { id } = req.params;
     const user = await getUserByIdRepository(id);
@@ -113,6 +126,7 @@ const getUserById = async (req: Request, res: Response<ResponseType<User>>) => {
       data: user,
     };
     res.status(statusCode.OK).json(response);
+    return;
   } catch (error: any) {
     const response: ResponseType<User> = {
       status: false,
@@ -120,13 +134,14 @@ const getUserById = async (req: Request, res: Response<ResponseType<User>>) => {
       error: (error as ErrorType) ? error.message : "Internal server error",
     };
     res.status(statusCode.INTERNAL_SERVER_ERROR).json(response);
+    return;
   }
 };
 
 const updateUserById = async (
   req: Request,
   res: Response<ResponseType<User>>
-) => {
+): Promise<void> => {
   try {
     const { id } = req.params;
     const { name, password, email } = req.body;
@@ -187,6 +202,7 @@ const updateUserById = async (
       data: updatedUser,
     };
     res.status(statusCode.OK).json(response);
+    return;
   } catch (error: any) {
     let response: ResponseType<User>;
 
@@ -216,13 +232,14 @@ const updateUserById = async (
       error: error.message || "Internal server error",
     };
     res.status(statusCode.INTERNAL_SERVER_ERROR).json(response);
+    return;
   }
 };
 
 const updateUserOneField = async (
   req: Request,
   res: Response<ResponseType<User>>
-) => {
+): Promise<void> => {
   try {
     const { id } = req.params;
     const { field, value } = req.body;
@@ -258,6 +275,7 @@ const updateUserOneField = async (
       data: updatedUser,
     };
     res.status(statusCode.OK).json(response);
+    return;
   } catch (error: any) {
     let response: ResponseType<User>;
 
@@ -287,6 +305,7 @@ const updateUserOneField = async (
       error: error.message || "Internal server error",
     };
     res.status(statusCode.INTERNAL_SERVER_ERROR).json(response);
+    return;
   }
 };
 
@@ -319,6 +338,7 @@ const updateStatusUser = async (
       data: updatedUser,
     };
     res.status(statusCode.OK).json(response);
+    return;
   } catch (error: any) {
     let response: ResponseType<User>;
 
@@ -348,9 +368,9 @@ const updateStatusUser = async (
       error: error.message || "Internal server error",
     };
     res.status(statusCode.INTERNAL_SERVER_ERROR).json(response);
+    return;
   }
 };
-
 
 export {
   getUsers,

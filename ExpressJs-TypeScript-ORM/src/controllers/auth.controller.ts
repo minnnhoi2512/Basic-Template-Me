@@ -9,7 +9,10 @@ import { AuthenticatedRequest } from "../types/AuthenticateRequest.type";
 import { redisClient } from "../config/redis.config";
 import { cacheTime } from "../constants/redisCacheTime";
 
-const loginUser = async (req: Request, res: Response<ResponseType<User>>) => {
+const loginUser = async (
+  req: Request,
+  res: Response<ResponseType<User>>
+): Promise<void> => {
   try {
     const { email, password } = req.body;
     const user = await loginUserRepositoryByEmail(email);
@@ -38,6 +41,7 @@ const loginUser = async (req: Request, res: Response<ResponseType<User>>) => {
       token: token,
     };
     res.status(statusCode.OK).json(response);
+    return;
   } catch (error: any) {
     const response: ResponseType<User> = {
       status: false,
@@ -45,13 +49,14 @@ const loginUser = async (req: Request, res: Response<ResponseType<User>>) => {
       error: (error as ErrorType) ? error.message : "Internal server error",
     };
     res.status(statusCode.INTERNAL_SERVER_ERROR).json(response);
+    return;
   }
 };
 
 const getProfile = async (
   req: AuthenticatedRequest,
   res: Response<ResponseType<User>>
-): Promise<any> => {
+): Promise<void> => {
   try {
     if (!req.data) {
       res.status(statusCode.UNAUTHORIZED).json({
@@ -72,7 +77,8 @@ const getProfile = async (
         message: "Profile fetched successfully from cache",
         data: JSON.parse(cachedProfile),
       };
-      return res.status(statusCode.OK).json(response);
+      res.status(statusCode.OK).json(response);
+      return;
     }
 
     // Cache miss: fetch from the database
@@ -96,13 +102,17 @@ const getProfile = async (
       data: userData,
     };
     res.status(statusCode.OK).json(response);
+    return;
   } catch (error: any) {
     const response: ResponseType<User> = {
       status: false,
       message: "Failed to fetch profile",
       error: error.message || "Internal server error",
     };
-    res.status(error.statusCode || statusCode.INTERNAL_SERVER_ERROR).json(response);
+    res
+      .status(error.statusCode || statusCode.INTERNAL_SERVER_ERROR)
+      .json(response);
+    return;
   }
 };
 export { loginUser, getProfile };

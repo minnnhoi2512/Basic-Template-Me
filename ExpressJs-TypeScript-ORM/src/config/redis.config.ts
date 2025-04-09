@@ -25,7 +25,7 @@ class RedisClient {
 
     this.client = createClient({
       username: process.env.REDIS_US || "default", // Redis username
-      password: process.env.REDIS_PW, // Redis password (loaded from env)
+      password: process.env.REDIS_PW || "default_pw", // Redis password (loaded from env)
       socket: {
         host: process.env.REDIS_HOST || "localhost", // Redis host
         port, // Redis port
