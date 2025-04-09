@@ -1,9 +1,10 @@
-import { Response, NextFunction } from "express";
+import { Response, NextFunction, Request } from "express";
 import jwt from "jsonwebtoken";
 import { JwtPayload } from "../types/Jwt.type";
 import { ResponseType } from "../types/Response.type";
 import statusCode from "../constants/statusCode";
 import { AuthenticatedRequest } from "../types/AuthenticateRequest.type";
+import { redisClient } from "../config/redis.config";
 
 export const authenticateToken = (
   req: AuthenticatedRequest,
@@ -42,6 +43,43 @@ export const authenticateToken = (
       message: errorMessage,
     };
     res.status(statusCode.UNAUTHORIZED).json(response);
+    return;
+  }
+};
+
+export const apiKeyAuthenticate = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const apiKey = req.headers["x-api-key"] as string; // Type assertion for safety
+    if (!apiKey) {
+      res.status(statusCode.UNAUTHORIZED).json({ message: "Missing API key" });
+      return;
+    }
+
+    // Fetch the stored value using the correct key
+    const storedValue = await redisClient.get(`api_key:${apiKey}`);
+    if (!storedValue) {
+      res.status(statusCode.UNAUTHORIZED).json({ message: "Invalid API key" });
+      return;
+    }
+
+    // Split the stored value (format: "userId-apiKey")
+    const [_storedUserId, storedApiKey] = storedValue.split("-");
+    if (storedApiKey !== apiKey) {
+      res
+        .status(statusCode.FORBIDDEN)
+        .json({ message: "API key mismatch", userId: _storedUserId });
+      return;
+    }
+
+    next();
+  } catch (error: any) {
+    res
+      .status(statusCode.UNAUTHORIZED)
+      .json({ message: "Unauthorized", detail: error.message });
     return;
   }
 };
