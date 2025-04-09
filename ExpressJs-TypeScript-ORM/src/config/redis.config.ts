@@ -96,7 +96,25 @@ class RedisClient {
       logger.error(`Redis DEL error for key ${key}:`, error);
     }
   }
-
+  async lPush(key: string, value: string): Promise<number> {
+    try {
+      return await this.client.lPush(key, value);
+    } catch (error) {
+      logger.error(`Redis LPUSH error for key ${key}:`, error);
+      throw error;
+    }
+  }
+  async brPop(
+    key: string,
+    timeout: number
+  ): Promise<{ key: string; element: string } | null> {
+    try {
+      return await this.client.brPop(key, timeout);
+    } catch (error) {
+      logger.error(`Redis BRPOP error for key ${key}:`, error);
+      throw error;
+    }
+  }
   isConnectedStatus(): boolean {
     return this.isConnected;
   }
