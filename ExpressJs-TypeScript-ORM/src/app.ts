@@ -1,5 +1,5 @@
 // Base libraries
-import express, { Request, Response } from "express";
+import express from "express";
 import dotenv from "dotenv";
 import cluster from "cluster";
 import os from "os";
@@ -17,7 +17,6 @@ dotenv.config();
 const PORT = process.env.PORT || 3000;
 const isDev = process.env.NODE_ENV === "development";
 const numCPUs = os.cpus().length; // Number of CPU cores
-
 // Debug logger (namespace: app)
 const debugApp = debug("app"); // Usage: DEBUG=app node src/index.js to enable
 
@@ -69,4 +68,3 @@ if (cluster.isPrimary && !isDev) {
     // Note: Hot-reloading handled by nodemon, debugging via --inspect
   }
 }
-//test mt

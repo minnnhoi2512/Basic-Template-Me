@@ -10,7 +10,7 @@ export const configureRoutes = (app: express.Application) => {
   app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
   // API Routes
-  app.use("/api/users", authenticateToken, userRoute);
+  app.use("/users", authenticateToken, userRoute);
 
   // Add more routes here
 

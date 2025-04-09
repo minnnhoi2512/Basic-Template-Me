@@ -12,12 +12,12 @@
     "debug:prod": "cross-env NODE_ENV=production node --inspect dist/app.js",
     "lint": "eslint src/**/*.ts",
     "lint:fix": "eslint src/**/*.ts --fix",
-    "lint-staged": "lint-staged",
-    "prepare": "husky"
+    "prepare": "husky",
+    "lint-staged": "lint-staged"
   },
   "lint-staged": {
     "src/**/*.{js,ts}": [
-      "eslint src/**/*.ts --fix",
+      "eslint --fix",
       "git add"
     ]
   },
