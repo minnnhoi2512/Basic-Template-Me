@@ -1,7 +1,8 @@
-import nodemailer from "nodemailer";
+import nodemailer, { SendMailOptions } from "nodemailer";
 import { redisClient } from "../config/redis.config";
 import { logger } from "../config/logger.config";
 import debug from "debug";
+import { generateEmailTemplate } from "../views/mail.view";
 
 const debugEmail = debug("email"); 
 const transporter = nodemailer.createTransport({
@@ -18,25 +19,59 @@ const EMAIL_QUEUE_KEY = "email:queue";
 async function sendEmail(
   to: string,
   subject: string,
-  body: string
+  body: string,
+  options: {
+    recipientName?: string;
+    attachments?: SendMailOptions["attachments"];
+    retries?: number;
+  } = {}
 ): Promise<boolean> {
-  try {
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to,
-      subject,
-      html: body,
-    };
+  const { recipientName, attachments, retries = 2 } = options;
 
-    const info = await transporter.sendMail(mailOptions);
-    logger.info(`Email sent to ${to}: ${info.messageId}`);
-    debugEmail(`Email sent successfully to ${to}`);
-    return true;
-  } catch (error: any) {
-    logger.error(`Error sending email to ${to}: ${error.message}`);
-    debugEmail(`Email sending failed: ${error.message}`);
-    return false;
+  // Generate beautiful HTML content
+  const html = generateEmailTemplate(subject, body, recipientName);
+
+  // Email options
+  const mailOptions: SendMailOptions = {
+    from: process.env.EMAIL_USER,
+    to,
+    subject,
+    html,
+    attachments, // Optional attachments (e.g., files, images)
+  };
+
+  let attempt = 0;
+  let lastError: Error | null = null;
+
+  // Retry logic
+  while (attempt <= retries) {
+    try {
+      const info = await transporter.sendMail(mailOptions);
+      logger.info(`Email sent to ${to}: ${info.messageId}`);
+      debugEmail(`Email sent successfully to ${to} on attempt ${attempt + 1}`);
+      return true;
+    } catch (error: any) {
+      lastError = error;
+      attempt++;
+      logger.warn(
+        `Attempt ${attempt} failed for email to ${to}: ${error.message}`
+      );
+      debugEmail(`Email sending failed on attempt ${attempt}: ${error.message}`);
+
+      if (attempt <= retries) {
+        // Wait before retrying (exponential backoff: 1s, 2s, 4s, etc.)
+        const delay = Math.pow(2, attempt) * 1000;
+        await new Promise((resolve) => setTimeout(resolve, delay));
+      }
+    }
   }
+
+  // If all retries fail
+  logger.error(
+    `Failed to send email to ${to} after ${retries + 1} attempts: ${lastError?.message}`
+  );
+  debugEmail(`Email sending failed after all retries: ${lastError?.message}`);
+  return false;
 }
 
 // Background email processing service

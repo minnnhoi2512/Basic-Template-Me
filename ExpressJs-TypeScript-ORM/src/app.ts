@@ -12,6 +12,7 @@ import { configureMiddleware } from "./middleware/middleware";
 import { configureRoutes } from "./routes/index.route";
 import { gracefulShutdown } from "./utils/utils";
 import { queueEmail, startEmailService } from "./services/sendMail.service"; // Import email service
+import { ExtendedWorker } from "./types/Worker.type";
 dotenv.config();
 
 // PORT and Environment
@@ -34,14 +35,13 @@ if (cluster.isPrimary && !isDev) {
   // Fork a worker for the email service
   cluster.fork({ WORKER_TYPE: "email" });
 
-  cluster.on("exit", (worker, code, signal) => {
+  cluster.on("exit", (worker: ExtendedWorker, code, signal) => {
     logger.warn(
       `Worker ${worker.process.pid} died with code ${code} and signal ${signal}`
     );
     debugApp(`Worker ${worker.process.pid} exited`);
     logger.info("Starting a new worker...");
-    // Restart the same type of worker
-    cluster.fork({ WORKER_TYPE: process.env.WORKER_TYPE });
+    cluster.fork({ WORKER_TYPE: worker.process.env.WORKER_TYPE });
   });
 } else {
   if (process.env.WORKER_TYPE === "email" && !isDev) {
@@ -50,11 +50,8 @@ if (cluster.isPrimary && !isDev) {
   } else {
     // Start the HTTP server in this worker
     const app = express();
-    // Testing email service dev
-    startEmailService();
     // Configure middleware
     configureMiddleware(app);
-
     // Configure routes
     configureRoutes(app);
 
@@ -64,7 +61,11 @@ if (cluster.isPrimary && !isDev) {
         await connectDB();
         await redisClient.connect();
         logger.info(`Worker ${process.pid} started on port ${PORT}`);
+
         debugApp(`Worker ${process.pid} successfully started`);
+        if (isDev) {
+          startEmailService();
+        }
       } catch (error: any) {
         logger.error("Failed to start server:", error.message);
         debugApp(`Worker ${process.pid} failed: ${error.message}`);

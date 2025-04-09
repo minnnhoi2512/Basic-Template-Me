@@ -1,10 +1,10 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import { queueEmail } from "../services/sendMail.service";
 import statusCode from "../constants/statusCode";
 
 const router = express.Router();
 
-router.post("/send-email", async (req, res) => {
+router.post("/send-email", async (req:Request, res:Response) => {
 //   const { to, subject, body } = req.body;
   try {
     await queueEmail("mhoinguyen2512@gmail.com", "Test Subject", "<p>Test Body</p>");
