@@ -2,3 +2,5 @@ $ nest generate module user-module
 $ cd src/user-module
 $ nest generate provider user-service
 $ nest generate controller user-controller
+$ nest generate service user-controller
+$ nest g s user

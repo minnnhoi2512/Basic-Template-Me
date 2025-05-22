@@ -1,16 +1,16 @@
 import { NestFactory } from '@nestjs/core';
-import { UsersModule } from './modules/users/users.module';
-import { setupSwagger } from './common/config/config.swagger';
-
-declare const module: any;
+import { AppModule } from './modules/app.module';
+import { setupSwagger } from './swagger';
+import { AuthService } from './auth/auth.service';
 
 async function bootstrap() {
-  const app = await NestFactory.create(UsersModule);
-  setupSwagger(app);
-  await app.listen(process.env.PORT ?? 3000);
-  if (module.hot) {
-    module.hot.accept();
-    module.hot.dispose(() => app.close());
-  }
+  const app = await NestFactory.create(AppModule);
+
+  const authService = app.get(AuthService);
+  const port = authService.getPort();
+
+  setupSwagger(app, authService.getAuth());
+
+  await app.listen(port || 9999);
 }
 bootstrap();
