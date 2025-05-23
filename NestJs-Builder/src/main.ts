@@ -1,19 +1,88 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './modules/app.module';
 import { setupSwagger } from './swagger';
-import { AuthService } from './auth/auth.service';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor';
+import { LoggerInterceptor } from './common/interceptors/logger.interceptor';
+import { MetricsInterceptor } from './common/interceptors/metrics.interceptor';
+import { Logger } from './common/extraModules/services/logger.service';
+import { LoggerModule } from './common/extraModules/modules/logger.module';
+import { MetricsModule } from './common/extraModules/modules/metrics.module';
+import { MetricsService } from './common/extraModules/services/metrics.service';
+import * as os from 'os';
+import 'dotenv/config';
+
+const port = process.env.PORT || 9999;
+const mode = process.env.NODE_ENV || 'development';
+const auth = process.env.AUTH || 'BEARER';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const logger = new Logger();
 
-  app.useGlobalInterceptors(new ResponseInterceptor());
+  const app = await NestFactory.create(AppModule, {
+    logger,
+  });
 
-  const authService = app.get(AuthService);
-  const port = authService.getPort();
+  // Import logger and metrics modules
+  app.select(LoggerModule);
+  app.select(MetricsModule);
 
-  setupSwagger(app, authService.getAuth());
+  const metricsService = app.select(MetricsModule).get(MetricsService);
 
-  await app.listen(port || 9999);
+  app.useGlobalInterceptors(
+    new ResponseInterceptor(),
+    new LoggerInterceptor(logger),
+    new MetricsInterceptor(metricsService),
+  );
+  setupSwagger(app, auth);
+
+  // Enable graceful shutdown
+  const signals = ['SIGTERM', 'SIGINT'];
+  signals.forEach(signal => {
+    process.on(signal, () => {
+      logger.info(`Received ${signal}, starting graceful shutdown`);
+      app
+        .close()
+        .then(() => {
+          logger.info('Application closed successfully');
+          process.exit(0);
+        })
+        .catch(error => {
+          logger.error('Error during graceful shutdown', error.stack);
+          process.exit(1);
+        });
+    });
+  });
+
+  await app.listen(port);
+  logger.info(`Application is running on: ${await app.getUrl()}`);
 }
-bootstrap();
+
+async function startCluster() {
+  const logger = new Logger();
+
+  const cluster = (await import('cluster')) as any;
+
+  if (cluster.isPrimary && mode === 'production') {
+    const numCPUs = os.cpus().length;
+    logger.info(`Primary ${process.pid} is running`);
+    logger.info(`Forking for ${numCPUs} CPUs`);
+
+    // Fork workers
+    for (let i = 0; i < numCPUs; i++) {
+      cluster.fork();
+    }
+
+    cluster.on('exit', (worker, code, signal) => {
+      logger.warn(
+        `Worker ${worker.process.pid} died with code ${code} and signal ${signal}`,
+      );
+      logger.info('Starting a new worker');
+      cluster.fork();
+    });
+  } else {
+    logger.info(`Worker ${process.pid} started`);
+    bootstrap();
+  }
+}
+
+startCluster();

@@ -3,6 +3,7 @@ import { Episode } from './entity/episode.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EpisodeDTO } from './dto/episode.dto';
+import { CreateEpisodeDTO } from './dto/create-episode.dto';
 
 @Injectable()
 export class EpisodesService {
@@ -11,7 +12,9 @@ export class EpisodesService {
     private episodeRepository: Repository<Episode>,
   ) {}
 
-  async createEpisodeService(episode: EpisodeDTO): Promise<EpisodeDTO> {
+  async createEpisodeService(
+    episode: CreateEpisodeDTO,
+  ): Promise<CreateEpisodeDTO> {
     const newEpisode = new Episode();
     newEpisode.title = episode.title;
     newEpisode.description = episode.description;

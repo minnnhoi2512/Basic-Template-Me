@@ -11,6 +11,7 @@ import {
 import { EpisodesService } from './episodes.service';
 import { EpisodeDTO } from './dto/episode.dto';
 import { CommonApiResponses } from 'src/common/decorators/response.decorator';
+import { CreateEpisodeDTO } from './dto/create-episode.dto';
 @Controller('episodes')
 export class EpisodesController {
   constructor(private episodesService: EpisodesService) {}
@@ -39,13 +40,12 @@ export class EpisodesController {
   }
   @Post()
   @CommonApiResponses({
-    dto: EpisodeDTO,
+    dto: CreateEpisodeDTO,
     dtoName: 'episode',
     summary: 'Create episode',
     description: 'Create episode description',
   })
-  createEpisodeController(@Body() body: EpisodeDTO) {
-    console.log(body);
+  createEpisodeController(@Body() body: CreateEpisodeDTO) {
     return this.episodesService.createEpisodeService(body);
   }
   @Put(':id')

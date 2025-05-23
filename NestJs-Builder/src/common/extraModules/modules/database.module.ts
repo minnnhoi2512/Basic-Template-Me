@@ -5,9 +5,9 @@ import { MysqlConnectionOptions } from 'typeorm/driver/mysql/MysqlConnectionOpti
 import { MongoConnectionOptions } from 'typeorm/driver/mongodb/MongoConnectionOptions';
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
 import { SqlServerConnectionOptions } from 'typeorm/driver/sqlserver/SqlServerConnectionOptions';
-import { Episode } from '../episodes/entity/episode.entity';
-import { Topic } from '../topic/entity/topic.entity';
-import { Book } from '../books/entity/book.entity';
+import { Episode } from '../../../modules/episodes/entity/episode.entity';
+import { Topic } from '../../../modules/topic/entity/topic.entity';
+import { Book } from '../../../modules/books/entity/book.entity';
 
 type DatabaseType = 'mysql' | 'postgres' | 'mongodb' | 'mssql';
 

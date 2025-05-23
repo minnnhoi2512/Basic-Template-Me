@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, IsDate } from 'class-validator';
+import { IsString, IsNotEmpty } from 'class-validator';
 import { TopicDTO } from 'src/modules/topic/dto/topic.dto';
 import { Book } from '../entity/book.entity';
 
@@ -36,28 +36,10 @@ export class CreateBookDTO {
   @IsNotEmpty()
   topic: TopicDTO;
 
-  @IsDate()
-  @IsNotEmpty()
-  @ApiProperty({
-    description: 'The created date of the book',
-    example: 'The created date of the book',
-  })
-  createdAt: Date;
-
-  @ApiProperty({
-    description: 'The updated date of the book',
-    example: 'The updated date of the book',
-  })
-  @IsDate()
-  @IsNotEmpty()
-  updatedAt: Date;
-
   constructor(params: Book) {
     this.title = params.title;
     this.description = params.description;
     this.author = params.author;
     this.topic = params.topic;
-    this.createdAt = params.createdAt;
-    this.updatedAt = params.updatedAt;
   }
 }

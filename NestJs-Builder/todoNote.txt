@@ -1,5 +1,14 @@
-// logger
+// logger Done
 // hot reload Done
-// grateful-shutdown
-// database connect
+// grateful-shutdown Done
+// database connect Done
 // swagger Done
+// middleware 
+// metrics Done
+// rateLimit  
+// cors
+// background
+// validation
+// jwt
+// utils
+// views

@@ -22,7 +22,6 @@ export class BooksService {
 
     // Handle topic relationship
     if (book.topic) {
-      console.log(book.topic);
       const topic = (await this.topicService.getTopicByIdService(
         book.topic as unknown as number,
         'create',
