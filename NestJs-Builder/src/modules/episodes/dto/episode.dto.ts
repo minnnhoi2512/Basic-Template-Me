@@ -11,6 +11,7 @@ export class EpisodeDTO {
   @IsString()
   @IsNotEmpty()
   title: string;
+
   @IsString()
   @IsNotEmpty()
   @ApiProperty({
@@ -19,6 +20,7 @@ export class EpisodeDTO {
     required: true,
   })
   description: string;
+
   @IsDate()
   @Type(() => Date)
   @ApiProperty({

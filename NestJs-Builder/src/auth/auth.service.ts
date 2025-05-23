@@ -17,6 +17,9 @@ export class AuthService {
   getJwtExpiresIn() {
     return this.configService.get<string>('jwt.expiresIn');
   }
+  getDbType() {
+    return this.configService.get<string>('database.type');
+  }
   getDbHost() {
     return this.configService.get<string>('database.host');
   }
