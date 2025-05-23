@@ -1,10 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, IsDate, IsArray } from 'class-validator';
-import { EpisodeDTO } from 'src/modules/episodes/dto/episode.dto';
+import { IsString, IsNotEmpty, IsDate } from 'class-validator';
 import { TopicDTO } from 'src/modules/topic/dto/topic.dto';
 import { Book } from '../entity/book.entity';
 
-export class BookDTO {
+export class CreateBookDTO {
   @ApiProperty({
     description: 'The title of the book',
     example: 'The title of the book',
@@ -27,23 +26,15 @@ export class BookDTO {
   })
   @IsString()
   @IsNotEmpty()
-  @ApiProperty({
-    description: 'The author of the book',
-    example: 'The author of the book',
-  })
   author: string;
 
   @ApiProperty({
     description: 'The topic of the book',
+    example: 'The topic of the book',
   })
+  @IsString()
   @IsNotEmpty()
   topic: TopicDTO;
-
-  @ApiProperty({
-    description: 'The episodes of the book',
-  })
-  @IsArray()
-  episodes: EpisodeDTO[];
 
   @IsDate()
   @IsNotEmpty()
@@ -66,7 +57,6 @@ export class BookDTO {
     this.description = params.description;
     this.author = params.author;
     this.topic = params.topic;
-    this.episodes = params.episodes;
     this.createdAt = params.createdAt;
     this.updatedAt = params.updatedAt;
   }

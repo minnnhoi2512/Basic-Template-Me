@@ -1,22 +1,16 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
+  Put,
   Query,
-  NotFoundException,
-  ValidationPipe,
-  // UseGuards,
 } from '@nestjs/common';
 import { EpisodesService } from './episodes.service';
 import { EpisodeDTO } from './dto/episode.dto';
-
-import { ApiQuery } from '@nestjs/swagger';
 import { CommonApiResponses } from 'src/common/decorators/response.decorator';
-// import { Guards } from 'src/guards/guards';
-
-// @UseGuards(Guards)
 @Controller('episodes')
 export class EpisodesController {
   constructor(private episodesService: EpisodesService) {}
@@ -24,17 +18,14 @@ export class EpisodesController {
   @CommonApiResponses({
     dto: EpisodeDTO,
     dtoName: 'episode',
-    summary: 'Get all episodes',
-    description: 'Get all episodes description',
+    summary: 'Get list episodes',
+    description: 'Get list episodes description',
   })
-  @ApiQuery({
-    name: 'sort',
-    type: String,
-    enum: ['asc', 'desc'],
-    required: false,
-  })
-  getAllEpisodes(@Query('sort') sort: 'asc' | 'desc') {
-    return this.episodesService.getAllEpisodesService(sort);
+  getListEpisodesController(
+    @Query('page') page: number,
+    @Query('limit') limit: number,
+  ) {
+    return this.episodesService.getListEpisodesService(page, limit);
   }
   @Get(':id')
   @CommonApiResponses({
@@ -43,12 +34,8 @@ export class EpisodesController {
     summary: 'Get episode by id',
     description: 'Get episode by id description',
   })
-  findOne(@Param('id') id: string) {
-    const episode = this.episodesService.getEpisodeByIdService(+id);
-    if (!episode) {
-      throw new NotFoundException('Episode not found');
-    }
-    return episode;
+  getEpisodeByIdController(@Param('id') id: string) {
+    return this.episodesService.getEpisodeByIdService(+id);
   }
   @Post()
   @CommonApiResponses({
@@ -57,7 +44,28 @@ export class EpisodesController {
     summary: 'Create episode',
     description: 'Create episode description',
   })
-  createEpisodes(@Body(ValidationPipe) body: EpisodeDTO) {
+  createEpisodeController(@Body() body: EpisodeDTO) {
+    console.log(body);
     return this.episodesService.createEpisodeService(body);
+  }
+  @Put(':id')
+  @CommonApiResponses({
+    dto: EpisodeDTO,
+    dtoName: 'episode',
+    summary: 'Update episode',
+    description: 'Update episode description',
+  })
+  updateEpisodeController(@Param('id') id: string, @Body() body: EpisodeDTO) {
+    return this.episodesService.updateEpisodeService(+id, body);
+  }
+  @Delete(':id')
+  @CommonApiResponses({
+    dto: EpisodeDTO,
+    dtoName: 'episode',
+    summary: 'Delete episode',
+    description: 'Delete episode description',
+  })
+  deleteEpisodeController(@Param('id') id: string) {
+    return this.episodesService.deleteEpisodeService(+id);
   }
 }

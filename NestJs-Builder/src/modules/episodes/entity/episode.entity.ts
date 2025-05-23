@@ -16,7 +16,7 @@ export class Episode {
   title: string;
 
   @ManyToOne(() => Book, { onDelete: 'SET NULL' })
-  @JoinColumn({ name: 'bookId' })
+  @JoinColumn({ name: 'book' })
   book: Book;
 
   @Column()

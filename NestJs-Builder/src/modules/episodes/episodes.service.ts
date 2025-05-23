@@ -1,36 +1,56 @@
-import { Injectable, NotFoundException, HttpStatus } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Episode } from './entity/episode.entity';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 import { EpisodeDTO } from './dto/episode.dto';
 
 @Injectable()
 export class EpisodesService {
-  private episodes: Episode[] = [];
+  constructor(
+    @InjectRepository(Episode)
+    private episodeRepository: Repository<Episode>,
+  ) {}
 
-  createEpisodeService(episode: EpisodeDTO): EpisodeDTO {
+  async createEpisodeService(episode: EpisodeDTO): Promise<EpisodeDTO> {
     const newEpisode = new Episode();
-    newEpisode.id = this.episodes.length + 1;
     newEpisode.title = episode.title;
     newEpisode.description = episode.description;
     newEpisode.publishedAt = episode.publishedAt;
-    this.episodes.push(newEpisode);
-    return newEpisode;
+    newEpisode.book = episode.book;
+    return this.episodeRepository.save(newEpisode);
   }
-  getAllEpisodesService(sort: 'asc' | 'desc'): Episode[] {
-    if (sort === 'asc') {
-      this.episodes.sort((a: Episode, b: Episode) => a.id - b.id);
-    } else {
-      this.episodes.sort((a: Episode, b: Episode) => b.id - a.id);
-    }
-    return this.episodes;
+
+  async getListEpisodesService(
+    page: number,
+    limit: number,
+  ): Promise<EpisodeDTO[]> {
+    const episodes = await this.episodeRepository.find({
+      skip: (page - 1) * limit,
+      take: limit,
+      order: { publishedAt: 'DESC' },
+    });
+    return episodes.map(episode => new EpisodeDTO(episode));
   }
-  getEpisodeByIdService(id: number): Episode {
-    const episode = this.episodes.find((episode: Episode) => episode.id === id);
+
+  async getEpisodeByIdService(id: number): Promise<EpisodeDTO> {
+    const episode = await this.episodeRepository.findOne({ where: { id } });
     if (!episode) {
-      throw new NotFoundException('Episode not found', {
-        cause: HttpStatus.NOT_FOUND,
-        description: 'Episode not found',
-      });
+      throw new NotFoundException('Episode not found');
     }
     return episode;
+  }
+
+  async updateEpisodeService(id: number, episode: EpisodeDTO): Promise<void> {
+    const updatedEpisode = await this.episodeRepository.update(id, episode);
+    if (!updatedEpisode) {
+      throw new NotFoundException('Episode not found');
+    }
+  }
+
+  async deleteEpisodeService(id: number): Promise<void> {
+    const deletedEpisode = await this.episodeRepository.delete(id);
+    if (!deletedEpisode) {
+      throw new NotFoundException('Episode not found');
+    }
   }
 }
