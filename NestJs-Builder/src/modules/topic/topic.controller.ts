@@ -11,19 +11,20 @@ import {
 import { TopicService } from './topic.service';
 import { TopicDTO } from './dto/topic.dto';
 import { CommonApiResponses } from 'src/common/decorators/response.decorator';
+import { CreateTopicDTO } from './dto/create-topic.dto';
 
 @Controller('topic')
 export class TopicController {
   constructor(private topicService: TopicService) {}
 
   @CommonApiResponses({
-    dto: TopicDTO,
+    dto: CreateTopicDTO,
     dtoName: 'topic',
     summary: 'Create a new topic',
     description: 'Create a new topic description',
   })
   @Post()
-  createTopicController(@Body() topic: TopicDTO) {
+  createTopicController(@Body() topic: CreateTopicDTO) {
     return this.topicService.createTopicService(topic);
   }
 
@@ -49,7 +50,7 @@ export class TopicController {
     description: 'Get topic by id description',
   })
   getTopicByIdController(@Param('id') id: number) {
-    return this.topicService.getTopicByIdService(id);
+    return this.topicService.getTopicByIdService(id, 'get');
   }
 
   @Put(':id')

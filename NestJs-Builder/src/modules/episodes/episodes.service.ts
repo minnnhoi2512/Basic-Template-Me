@@ -33,7 +33,10 @@ export class EpisodesService {
   }
 
   async getEpisodeByIdService(id: number): Promise<EpisodeDTO> {
-    const episode = await this.episodeRepository.findOne({ where: { id } });
+    const episode = await this.episodeRepository.findOne({
+      where: { id },
+      relations: ['book'],
+    });
     if (!episode) {
       throw new NotFoundException('Episode not found');
     }

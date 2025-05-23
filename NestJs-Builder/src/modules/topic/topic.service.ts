@@ -3,6 +3,7 @@ import { Topic } from './entity/topic.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TopicDTO } from './dto/topic.dto';
+import { CreateTopicDTO } from './dto/create-topic.dto';
 
 @Injectable()
 export class TopicService {
@@ -11,7 +12,7 @@ export class TopicService {
     private topicRepository: Repository<Topic>,
   ) {}
 
-  async createTopicService(topic: TopicDTO): Promise<TopicDTO> {
+  async createTopicService(topic: CreateTopicDTO): Promise<CreateTopicDTO> {
     const newTopic = new Topic();
     newTopic.name = topic.name;
     newTopic.description = topic.description;
@@ -22,14 +23,21 @@ export class TopicService {
     const topics = await this.topicRepository.find({
       skip: (page - 1) * limit,
       take: limit,
+      order: {
+        createdAt: 'DESC',
+      },
     });
     return topics.map(topic => new TopicDTO(topic));
   }
 
-  async getTopicByIdService(id: number): Promise<TopicDTO> {
+  async getTopicByIdService(
+    id: number,
+    type: 'create' | 'get',
+  ): Promise<TopicDTO | CreateTopicDTO> {
+    const whereCondition =
+      type === 'create' ? { id } : { id, relations: ['books'] };
     const topic = await this.topicRepository.findOne({
-      where: { id },
-      relations: ['books'],
+      where: whereCondition,
     });
     if (!topic) {
       throw new NotFoundException('Topic not found');
