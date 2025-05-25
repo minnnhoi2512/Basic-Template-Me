@@ -3,10 +3,11 @@
 // grateful-shutdown Done
 // database connect Done
 // swagger Done
-// middleware 
 // metrics Done
-// rateLimit  
-// cors
+// rateLimit  Done
+// middleware 
+// health Done
+// cors Done
 // background
 // validation
 // jwt

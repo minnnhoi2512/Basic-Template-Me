@@ -1,6 +1,6 @@
 import { Global, Module } from '@nestjs/common';
 import { Logger } from '../services/logger.service';
-import { LoggerInterceptor } from '../../interceptors/logger.interceptor';
+import { LoggerInterceptor } from '../interceptors/logger.interceptor';
 
 @Global()
 @Module({

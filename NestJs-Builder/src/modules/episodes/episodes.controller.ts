@@ -15,6 +15,7 @@ import { CreateEpisodeDTO } from './dto/create-episode.dto';
 @Controller('episodes')
 export class EpisodesController {
   constructor(private episodesService: EpisodesService) {}
+
   @Get()
   @CommonApiResponses({
     dto: EpisodeDTO,

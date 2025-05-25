@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { Logger } from '../extraModules/services/logger.service';
+import { Logger } from '../services/logger.service';
 
 @Injectable()
 export class LoggerInterceptor implements NestInterceptor {

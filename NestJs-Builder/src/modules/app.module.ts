@@ -6,23 +6,13 @@ import { DatabaseModule } from '../common/extraModules/modules/database.module';
 import { ConfigModuleSystem } from '../common/extraModules/modules/config.module';
 import { LoggerModule } from '../common/extraModules/modules/logger.module';
 import { MetricsModule } from '../common/extraModules/modules/metrics.module';
-import { ConfigModule } from '@nestjs/config';
-import { ConfigService } from '@nestjs/config';
-import { ThrottlerModule } from '@nestjs/throttler';
+import { RateLimitModule } from '../common/extraModules/modules/rate-limit.module';
+import { CorsModule } from '../common/extraModules/modules/cors.module';
+import { HealthModule } from '../common/extraModules/modules/health.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
-    ThrottlerModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: () => [
-        {
-          ttl: 0, // Time window in seconds
-          limit: 0, // Max requests per window
-        },
-      ],
-    }),
+    RateLimitModule,
     ConfigModuleSystem,
     DatabaseModule,
     EpisodesModule,
@@ -30,6 +20,8 @@ import { ThrottlerModule } from '@nestjs/throttler';
     BooksModule,
     LoggerModule,
     MetricsModule,
+    CorsModule,
+    HealthModule,
   ],
 })
 export class AppModule {}
