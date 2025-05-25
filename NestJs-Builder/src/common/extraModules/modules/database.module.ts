@@ -8,6 +8,7 @@ import { SqlServerConnectionOptions } from 'typeorm/driver/sqlserver/SqlServerCo
 import { Episode } from '../../../modules/episodes/entity/episode.entity';
 import { Topic } from '../../../modules/topic/entity/topic.entity';
 import { Book } from '../../../modules/books/entity/book.entity';
+import { User } from '../../../modules/user/entity/user.entity';
 
 type DatabaseType = 'mysql' | 'postgres' | 'mongodb' | 'mssql';
 
@@ -30,7 +31,7 @@ type DatabaseType = 'mysql' | 'postgres' | 'mongodb' | 'mssql';
           username: configService.getOrThrow<string>('database.username'),
           password: configService.getOrThrow<string>('database.password'),
           database: configService.getOrThrow<string>('database.name'),
-          entities: [Episode, Topic, Book],
+          entities: [Episode, Topic, Book, User],
           synchronize: true,
         };
 

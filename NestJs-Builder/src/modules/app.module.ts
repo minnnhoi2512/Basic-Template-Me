@@ -9,7 +9,7 @@ import { MetricsModule } from '../common/extraModules/modules/metrics.module';
 import { RateLimitModule } from '../common/extraModules/modules/rate-limit.module';
 import { CorsModule } from '../common/extraModules/modules/cors.module';
 import { HealthModule } from '../common/extraModules/modules/health.module';
-
+import { UserModule } from './user/user.module';
 @Module({
   imports: [
     RateLimitModule,
@@ -22,6 +22,7 @@ import { HealthModule } from '../common/extraModules/modules/health.module';
     MetricsModule,
     CorsModule,
     HealthModule,
+    UserModule,
   ],
 })
 export class AppModule {}
