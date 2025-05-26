@@ -10,6 +10,8 @@ import { RateLimitModule } from '../common/extraModules/modules/rate-limit.modul
 import { CorsModule } from '../common/extraModules/modules/cors.module';
 import { HealthModule } from '../common/extraModules/modules/health.module';
 import { UserModule } from './user/user.module';
+import { AuthModule } from '../common/extraModules/modules/auth.module';
+
 @Module({
   imports: [
     RateLimitModule,
@@ -23,6 +25,7 @@ import { UserModule } from './user/user.module';
     CorsModule,
     HealthModule,
     UserModule,
+    AuthModule,
   ],
 })
 export class AppModule {}

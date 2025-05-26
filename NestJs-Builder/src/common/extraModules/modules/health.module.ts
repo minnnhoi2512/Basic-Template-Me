@@ -6,10 +6,7 @@ import { DatabaseHealthIndicator } from '../indicators/database.health';
 import { MemoryHealthIndicator } from '../indicators/memory.health';
 
 @Module({
-  imports: [
-    TerminusModule,
-    HttpModule,
-  ],
+  imports: [TerminusModule, HttpModule],
   controllers: [HealthController],
   providers: [DatabaseHealthIndicator, MemoryHealthIndicator],
 })

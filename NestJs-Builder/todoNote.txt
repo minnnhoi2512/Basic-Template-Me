@@ -7,9 +7,9 @@
 // rateLimit  Done
 // health Done
 // cors Done
-// middleware 
+// middleware Done
 // background
 // validation
-// jwt
+// jwt Done
 // utils
 // views

@@ -25,6 +25,7 @@ export function CommonApiResponses(data: {
   dtoName: string;
   summary: string;
   description: string;
+  createRequest: boolean;
 }) {
   const successExample = {
     status: true,
@@ -52,14 +53,7 @@ export function CommonApiResponses(data: {
         },
       },
     }),
-    ApiCreatedResponse({
-      description: `The ${data.dtoName} was created successfully`,
-      content: {
-        'application/json': {
-          example: successExample,
-        },
-      },
-    }),
+
     ApiNoContentResponse({ description: 'No content' }),
     ApiBadRequestResponse({
       description: 'Bad request',
@@ -158,6 +152,17 @@ export function CommonApiResponses(data: {
       decorators.push(ApiBearerAuth());
       break;
   }
-
+  if (data.createRequest) {
+    decorators.push(
+      ApiCreatedResponse({
+        description: `The ${data.dtoName} was created successfully`,
+        content: {
+          'application/json': {
+            example: successExample,
+          },
+        },
+      }),
+    );
+  }
   return applyDecorators(...decorators);
 }

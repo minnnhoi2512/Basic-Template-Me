@@ -8,6 +8,7 @@ import { Logger } from './common/extraModules/services/logger.service';
 import { LoggerModule } from './common/extraModules/modules/logger.module';
 import { MetricsModule } from './common/extraModules/modules/metrics.module';
 import { MetricsService } from './common/extraModules/services/metrics.service';
+import { UnauthorizedExceptionFilter } from './common/extraModules/filters/unauthorized.filter';
 import * as os from 'os';
 import 'dotenv/config';
 
@@ -33,6 +34,10 @@ async function bootstrap() {
     new LoggerInterceptor(logger),
     new MetricsInterceptor(metricsService),
   );
+
+  // Add global filters
+  app.useGlobalFilters(new UnauthorizedExceptionFilter());
+
   setupSwagger(app, auth);
 
   // Enable graceful shutdown

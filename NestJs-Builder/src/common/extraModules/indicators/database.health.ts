@@ -14,9 +14,9 @@ export class DatabaseHealthIndicator extends HealthIndicator {
       return this.getStatus(key, true);
     } catch (error) {
       throw new HealthCheckError(
-        'Database check failed',
+        'Database check failed ' + error,
         this.getStatus(key, false),
       );
     }
   }
-} 
+}

@@ -23,7 +23,7 @@ export class HealthController {
       //   Check if the database is healthy
       () => this.db.isHealthy('database'),
       // Check memory usage
-      () => this.memory.checkSystemMemory('memory', 0.9),
+      // () => this.memory.checkSystemMemory('memory', 0.9),
       // Ping the API
       () => this.http.pingCheck('api', 'http://localhost:3000'),
     ]);

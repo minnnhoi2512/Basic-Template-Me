@@ -4,7 +4,7 @@ import * as os from 'os';
 
 @Injectable()
 export class MemoryHealthIndicator extends HealthIndicator {
-  async checkHeap(key: string, threshold: number) {
+  checkHeap(key: string, threshold: number) {
     const used = process.memoryUsage().heapUsed;
     const isHealthy = used < threshold;
 
@@ -18,7 +18,7 @@ export class MemoryHealthIndicator extends HealthIndicator {
     );
   }
 
-  async checkSystemMemory(key: string, thresholdPercent: number = 0.9) {
+  checkSystemMemory(key: string, thresholdPercent: number = 0.9) {
     const total = os.totalmem();
     const free = os.freemem();
     const used = total - free;
@@ -34,4 +34,4 @@ export class MemoryHealthIndicator extends HealthIndicator {
       this.getStatus(key, false, { usedPercent, thresholdPercent }),
     );
   }
-} 
+}

@@ -3,9 +3,9 @@ import {
   NestInterceptor,
   ExecutionContext,
   CallHandler,
+  HttpStatus,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
-import statusCode from 'src/common/constants/statusCode';
 import 'dotenv/config';
 
 @Injectable()
@@ -32,7 +32,7 @@ export class CorsInterceptor implements NestInterceptor {
 
     // Handle preflight requests
     if (request.method === 'OPTIONS') {
-      response.status(statusCode.NO_CONTENT).end();
+      response.status(HttpStatus.NO_CONTENT).end();
       return new Observable(subscriber => {
         subscriber.complete();
       });

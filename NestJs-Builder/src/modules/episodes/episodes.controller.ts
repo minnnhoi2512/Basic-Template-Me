@@ -12,7 +12,10 @@ import { EpisodesService } from './episodes.service';
 import { EpisodeDTO } from './dto/episode.dto';
 import { CommonApiResponses } from 'src/common/decorators/response.decorator';
 import { CreateEpisodeDTO } from './dto/create-episode.dto';
+import { JwtAuthGuard } from 'src/common/extraModules/guards/auth.guard';
+import { UseGuards } from '@nestjs/common';
 @Controller('episodes')
+@UseGuards(JwtAuthGuard)
 export class EpisodesController {
   constructor(private episodesService: EpisodesService) {}
 
@@ -22,6 +25,7 @@ export class EpisodesController {
     dtoName: 'episode',
     summary: 'Get list episodes',
     description: 'Get list episodes description',
+    createRequest: false,
   })
   getListEpisodesController(
     @Query('page') page: number,
@@ -35,6 +39,7 @@ export class EpisodesController {
     dtoName: 'episode',
     summary: 'Get episode by id',
     description: 'Get episode by id description',
+    createRequest: false,
   })
   getEpisodeByIdController(@Param('id') id: string) {
     return this.episodesService.getEpisodeByIdService(+id);
@@ -45,6 +50,7 @@ export class EpisodesController {
     dtoName: 'episode',
     summary: 'Create episode',
     description: 'Create episode description',
+    createRequest: true,
   })
   createEpisodeController(@Body() body: CreateEpisodeDTO) {
     return this.episodesService.createEpisodeService(body);
@@ -55,6 +61,7 @@ export class EpisodesController {
     dtoName: 'episode',
     summary: 'Update episode',
     description: 'Update episode description',
+    createRequest: false,
   })
   updateEpisodeController(@Param('id') id: string, @Body() body: EpisodeDTO) {
     return this.episodesService.updateEpisodeService(+id, body);
@@ -65,6 +72,7 @@ export class EpisodesController {
     dtoName: 'episode',
     summary: 'Delete episode',
     description: 'Delete episode description',
+    createRequest: false,
   })
   deleteEpisodeController(@Param('id') id: string) {
     return this.episodesService.deleteEpisodeService(+id);

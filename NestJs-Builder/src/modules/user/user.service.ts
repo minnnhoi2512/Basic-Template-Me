@@ -2,12 +2,15 @@ import {
   Injectable,
   ConflictException,
   NotFoundException,
+  BadRequestException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ILike, Repository } from 'typeorm';
 import { User } from './entity/user.entity';
 import * as bcrypt from 'bcrypt';
 import { CreateUserDTO } from './dto/create-user.dto';
+import { LoginUserDTO } from './dto/login-user.dto';
+import * as jwt from 'jsonwebtoken';
 @Injectable()
 export class UserService {
   constructor(
@@ -82,7 +85,27 @@ export class UserService {
     }
     return user;
   }
-  
+  async loginByEmailUserService(
+    user: LoginUserDTO,
+  ): Promise<{ userData: User; token: string }> {
+    const userData = await this.userRepository.findOne({
+      where: { email: user.email },
+    });
+    if (!userData) {
+      throw new NotFoundException('User not found');
+    }
+    const isPasswordValid = await bcrypt.compare(
+      user.password,
+      userData.password,
+    );
+    if (!isPasswordValid) {
+      throw new BadRequestException('Invalid password');
+    }
+    const token = jwt.sign({ userData }, process.env.JWT_SECRET || '', {
+      expiresIn: process.env.JWT_EXPIRES_IN,
+    });
+    return { userData, token };
+  }
   async updateUserService(
     id: number,
     updateData: Partial<User>,
