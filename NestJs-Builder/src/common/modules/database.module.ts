@@ -5,12 +5,11 @@ import { MysqlConnectionOptions } from 'typeorm/driver/mysql/MysqlConnectionOpti
 import { MongoConnectionOptions } from 'typeorm/driver/mongodb/MongoConnectionOptions';
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
 import { SqlServerConnectionOptions } from 'typeorm/driver/sqlserver/SqlServerConnectionOptions';
-import { Episode } from '../../../modules/episodes/entity/episode.entity';
-import { Topic } from '../../../modules/topic/entity/topic.entity';
-import { Book } from '../../../modules/books/entity/book.entity';
-import { User } from '../../../modules/user/entity/user.entity';
-
-type DatabaseType = 'mysql' | 'postgres' | 'mongodb' | 'mssql';
+import { Episode } from '../../modules/episodes/entity/episode.entity';
+import { Topic } from '../../modules/topic/entity/topic.entity';
+import { Book } from '../../modules/books/entity/book.entity';
+import { User } from '../../modules/user/entity/user.entity';
+import { DatabaseType } from 'src/shared/types/Database.type';
 
 @Module({
   imports: [

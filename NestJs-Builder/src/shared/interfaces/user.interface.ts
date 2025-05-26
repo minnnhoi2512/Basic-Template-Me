@@ -5,4 +5,4 @@ export interface IUser {
   password?: string;
   createdAt?: Date;
   updatedAt?: Date;
-} 
+}

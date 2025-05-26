@@ -5,7 +5,7 @@ import { ThrottlerExceptionFilter } from '../filters/throttler-exception.filter'
 import {
   NUMBER_OF_REQUEST,
   RATE_LIMIT_TTL,
-} from 'src/common/constants/rate-limit';
+} from 'src/shared/constants/rate-limit';
 
 @Module({
   imports: [
@@ -13,8 +13,8 @@ import {
       throttlers: [
         {
           name: 'default',
-          ttl: RATE_LIMIT_TTL, 
-          limit: NUMBER_OF_REQUEST, 
+          ttl: RATE_LIMIT_TTL,
+          limit: NUMBER_OF_REQUEST,
         },
       ],
     }),

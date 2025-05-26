@@ -7,7 +7,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { Observable, map, catchError, throwError } from 'rxjs';
-import { CustomResponse } from '../../responseType/response.dto';
+import { CustomResponse } from '../../shared/responseType/response.dto';
 
 @Injectable()
 export class ResponseInterceptor<T>

@@ -11,5 +11,7 @@
 // background Done
 // validation Done
 // jwt Done
-// utils
-// views
+// utils dONE
+// views NOT NÊCCESSARY
+// chia lai package Done
+// Redis

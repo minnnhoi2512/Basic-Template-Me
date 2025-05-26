@@ -10,9 +10,9 @@ import {
 } from '@nestjs/common';
 import { EpisodesService } from './episodes.service';
 import { EpisodeDTO } from './dto/episode.dto';
-import { CommonApiResponses } from 'src/common/decorators/response.decorator';
+import { CommonApiResponses } from 'src/shared/decorators/response.decorator';
 import { CreateEpisodeDTO } from './dto/create-episode.dto';
-import { JwtAuthGuard } from 'src/common/extraModules/guards/auth.guard';
+import { JwtAuthGuard } from 'src/common/guards/auth.guard';
 import { UseGuards } from '@nestjs/common';
 @Controller('episodes')
 @UseGuards(JwtAuthGuard)

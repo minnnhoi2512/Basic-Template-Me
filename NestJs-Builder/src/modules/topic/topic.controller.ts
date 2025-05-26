@@ -10,9 +10,9 @@ import {
 } from '@nestjs/common';
 import { TopicService } from './topic.service';
 import { TopicDTO } from './dto/topic.dto';
-import { CommonApiResponses } from 'src/common/decorators/response.decorator';
+import { CommonApiResponses } from 'src/shared/decorators/response.decorator';
 import { CreateTopicDTO } from './dto/create-topic.dto';
-import { JwtAuthGuard } from 'src/common/extraModules/guards/auth.guard';
+import { JwtAuthGuard } from 'src/common/guards/auth.guard';
 import { UseGuards } from '@nestjs/common';
 @Controller('topic')
 @UseGuards(JwtAuthGuard)

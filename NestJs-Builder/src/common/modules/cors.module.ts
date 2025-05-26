@@ -10,4 +10,4 @@ import { CorsInterceptor } from '../interceptors/cors.interceptor';
     },
   ],
 })
-export class CorsModule {} 
+export class CorsModule {}

@@ -5,14 +5,15 @@ import {
   HttpHealthIndicator,
 } from '@nestjs/terminus';
 import { DatabaseHealthIndicator } from '../indicators/database.health';
-import { MemoryHealthIndicator } from '../indicators/memory.health';
-
+// import { MemoryHealthIndicator } from '../indicators/memory.health';
+import { RedisHealthIndicator } from '../indicators/redis.health';
 @Controller('health')
 export class HealthController {
   constructor(
     private health: HealthCheckService,
-    private memory: MemoryHealthIndicator,
+    // private memory: MemoryHealthIndicator,
     private db: DatabaseHealthIndicator,
+    private redis: RedisHealthIndicator,
     private http: HttpHealthIndicator,
   ) {}
 
@@ -25,6 +26,9 @@ export class HealthController {
       // Check memory usage
       // () => this.memory.checkSystemMemory('memory', 0.9),
       // Ping the API
+      // check Redis
+      () => this.redis.isHealthy('redis'),
+      // check Http
       () => this.http.pingCheck('api', 'http://localhost:3000'),
     ]);
   }

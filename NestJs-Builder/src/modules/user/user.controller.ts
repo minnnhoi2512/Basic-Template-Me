@@ -15,10 +15,10 @@ import {
 import { UserService } from './user.service';
 import { CreateUserDTO } from './dto/create-user.dto';
 import { UserDTO } from './dto/user.dto';
-import { CommonApiResponses } from 'src/common/decorators/response.decorator';
+import { CommonApiResponses } from 'src/shared/decorators/response.decorator';
 import { ApiQuery } from '@nestjs/swagger';
 import { LoginUserDTO } from './dto/login-user.dto';
-import { JwtAuthGuard } from 'src/common/extraModules/guards/auth.guard';
+import { JwtAuthGuard } from 'src/common/guards/auth.guard';
 
 @Controller('users')
 export class UserController {

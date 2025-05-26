@@ -1,14 +1,14 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './modules/app.module';
 import { setupSwagger } from './swagger';
-import { ResponseInterceptor } from './common/extraModules/interceptors/response.interceptor';
-import { LoggerInterceptor } from './common/extraModules/interceptors/logger.interceptor';
-import { MetricsInterceptor } from './common/extraModules/interceptors/metrics.interceptor';
-import { Logger } from './common/extraModules/services/logger.service';
-import { LoggerModule } from './common/extraModules/modules/logger.module';
-import { MetricsModule } from './common/extraModules/modules/metrics.module';
-import { MetricsService } from './common/extraModules/services/metrics.service';
-import { UnauthorizedExceptionFilter } from './common/extraModules/filters/unauthorized.filter';
+import { ResponseInterceptor } from './common/interceptors/response.interceptor';
+import { LoggerInterceptor } from './common/interceptors/logger.interceptor';
+import { MetricsInterceptor } from './common/interceptors/metrics.interceptor';
+import { Logger } from './common/services/logger.service';
+import { LoggerModule } from './common/modules/logger.module';
+import { MetricsModule } from './common/modules/metrics.module';
+import { MetricsService } from './common/services/metrics.service';
+import { UnauthorizedExceptionFilter } from './common/filters/unauthorized.filter';
 import * as os from 'os';
 import 'dotenv/config';
 

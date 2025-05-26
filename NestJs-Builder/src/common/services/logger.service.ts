@@ -2,8 +2,9 @@ import { Injectable, LoggerService } from '@nestjs/common';
 import * as winston from 'winston';
 import * as path from 'path';
 import 'dotenv/config';
-import { LogLevel } from '../../types/LogLevel.type';
-import { colors, emoji, levels } from '../../constants/statusCodeColor';
+import { LogLevel } from '../../shared/types/LogLevel.type';
+import { emoji } from 'src/shared/constants/statusCodeColor';
+import { colors } from 'src/shared/constants/statusCodeColor';
 
 @Injectable()
 export class Logger implements LoggerService {
@@ -38,7 +39,6 @@ export class Logger implements LoggerService {
 
     this.logger = winston.createLogger({
       level: 'debug',
-      levels,
       format,
       transports,
       defaultMeta: { service: this.appName },
