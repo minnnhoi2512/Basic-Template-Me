@@ -15,3 +15,6 @@
 // views NOT NÊCCESSARY
 // chia lai package Done
 // Redis Done
+// build project Done
+// cicd Done
+// test
