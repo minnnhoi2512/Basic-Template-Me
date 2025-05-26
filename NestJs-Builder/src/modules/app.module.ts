@@ -11,6 +11,7 @@ import { CorsModule } from '../common/extraModules/modules/cors.module';
 import { HealthModule } from '../common/extraModules/modules/health.module';
 import { UserModule } from './user/user.module';
 import { AuthModule } from '../common/extraModules/modules/auth.module';
+import { BackgroundModule } from '../common/extraModules/modules/background.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { AuthModule } from '../common/extraModules/modules/auth.module';
     HealthModule,
     UserModule,
     AuthModule,
+    BackgroundModule,
   ],
 })
 export class AppModule {}
