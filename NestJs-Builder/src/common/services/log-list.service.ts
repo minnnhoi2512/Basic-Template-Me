@@ -5,7 +5,7 @@ import * as path from 'path';
 @Injectable()
 export class LogListService {
   private readonly logger = new Logger(LogListService.name);
-  private readonly logsDirectory = path.join(process.cwd(), 'src/logs');
+  private readonly logsDirectory = path.join(process.cwd(), 'logs');
 
   constructor() {
     this.ensureLogsDirectory();

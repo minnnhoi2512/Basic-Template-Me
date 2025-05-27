@@ -12,7 +12,7 @@ export class Logger implements LoggerService {
   private readonly appName: string;
 
   constructor() {
-    const logDir = path.join(process.cwd(), 'src/logs');
+    const logDir = path.join(process.cwd(), 'logs');
     this.appName = process.env.APP_NAME || 'NestJS-App';
 
     winston.addColors(colors);
