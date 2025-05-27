@@ -1,0 +1,213 @@
+#root {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0.5rem;
+  text-align: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+.poker-app {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0.5rem;
+  box-sizing: border-box;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.pool-section,
+.position-section {
+  width: 100%;
+  padding: 0.25rem;
+}
+
+.pool-section h2,
+.position-section h2 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 0.25rem;
+  font-size: 1rem;
+}
+
+.deck-container {
+  display: grid;
+  grid-template-columns: repeat(13, 1fr);
+  gap: 0.15rem;
+  margin-top: 0.25rem;
+}
+
+.card {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 0.1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: white;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.2s;
+  aspect-ratio: 3/4;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.card-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 0.1rem;
+}
+
+.rank {
+  font-size: 0.7rem;
+  font-weight: bold;
+}
+
+.suit {
+  font-size: 0.9rem;
+}
+
+.red {
+  color: #ff0000;
+}
+
+.black {
+  color: #000000;
+}
+
+.position-slot {
+  border: 1px dashed #ccc;
+  border-radius: 4px;
+  aspect-ratio: 3/4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8f8f8;
+}
+
+.position-slot.filled {
+  border: none;
+  background: none;
+}
+
+.empty-slot {
+  color: #999;
+  font-size: 0.5rem;
+}
+
+.position-number {
+  font-size: 0.4rem;
+  color: #666;
+  margin-top: 0.1rem;
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 0.5rem;
+  font-size: 1.2rem;
+}
+
+.position-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.25rem;
+}
+
+.clear-all-button {
+  background-color: #ff4444;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.clear-all-button:hover:not(:disabled) {
+  background-color: #ff0000;
+}
+
+.clear-all-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+/* Media queries for different screen sizes */
+@media (min-width: 768px) {
+  .app-container {
+    flex-direction: row;
+  }
+
+  .pool-section,
+  .position-section {
+    flex: 1;
+  }
+}
+
+/* For very small screens */
+@media (max-width: 360px) {
+  .deck-container {
+    grid-template-columns: repeat(13, 40px);
+  }
+
+  .card,
+  .position-slot {
+    width: 40px;
+    height: 55px;
+  }
+
+  .rank {
+    font-size: 0.7rem;
+  }
+
+  .suit {
+    font-size: 0.9rem;
+  }
+}
