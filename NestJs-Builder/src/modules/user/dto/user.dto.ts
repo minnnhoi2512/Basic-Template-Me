@@ -2,7 +2,6 @@ import {
   IsEmail,
   IsString,
   MinLength,
-  IsEnum,
   IsOptional,
   IsNumber,
 } from 'class-validator';
@@ -31,7 +30,7 @@ export class UserDTO {
     description: 'The email of the user',
     example: 'john.doe@example.com',
   })
-  email?: string;
+  email: string;
 
   @IsString()
   @MinLength(6)
@@ -48,5 +47,5 @@ export class UserDTO {
     description: 'The role of the user',
     example: 'admin',
   })
-  role?: string;
+  role: string;
 }
