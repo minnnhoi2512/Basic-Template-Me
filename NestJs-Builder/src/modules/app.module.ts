@@ -13,6 +13,7 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from '../common/modules/auth.module';
 import { BackgroundModule } from '../common/modules/background.module';
 import { RedisModule } from '../common/modules/redis.module';
+import { LogListModule } from '../common/modules/log-list.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { RedisModule } from '../common/modules/redis.module';
     UserModule,
     AuthModule,
     BackgroundModule,
+    LogListModule,
   ],
 })
 export class AppModule {}
