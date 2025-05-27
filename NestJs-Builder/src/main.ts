@@ -9,6 +9,7 @@ import { LoggerModule } from './common/modules/logger.module';
 import { MetricsModule } from './common/modules/metrics.module';
 import { MetricsService } from './common/services/metrics.service';
 import { UnauthorizedExceptionFilter } from './common/filters/unauthorized.filter';
+import helmet from 'helmet';
 import * as os from 'os';
 import 'dotenv/config';
 
@@ -22,6 +23,9 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger,
   });
+
+  // Enable Helmet
+  app.use(helmet());
 
   // Import logger and metrics modules
   app.select(LoggerModule);
