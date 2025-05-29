@@ -59,17 +59,69 @@ function App() {
       const newDeck = [...prevDeck];
       const card = newDeck[cardIndex];
       if (!card) return prevDeck;
-      
-      // Check if position is already taken
-      const positionTaken = newDeck.some(
-        (c) => c.position === newPosition && c !== card
-      );
-      
-      if (positionTaken) {
-        return prevDeck; // Don't update if position is taken
+
+      // If the card is already in a position, remove it first
+      if (card.position !== null) {
+        newDeck[cardIndex] = { suit: card.suit, rank: card.rank, position: null };
       }
 
-      newDeck[cardIndex] = { suit: card.suit, rank: card.rank, position: newPosition };
+      // Get all positioned cards sorted by position
+      const positionedCards = newDeck
+        .filter(c => c.position !== null)
+        .sort((a, b) => (a.position || 0) - (b.position || 0));
+
+      // If there are no positioned cards, just place the card at the new position
+      if (positionedCards.length === 0) {
+        newDeck[cardIndex] = { suit: card.suit, rank: card.rank, position: newPosition };
+        return newDeck;
+      }
+
+      // Check if the target position is already occupied
+      const isPositionOccupied = positionedCards.some(c => c.position === newPosition);
+
+      if (isPositionOccupied) {
+        // Create a temporary array to store the new positions
+        const newPositions = new Map<number, { suit: Suit; rank: Rank }>();
+
+        // 1. Shift cards at N to 51 forward by one (N→N+1, ..., 51→52)
+        for (let pos = 51; pos >= newPosition; pos--) {
+          const cardAtPos = newDeck.find(c => c.position === pos);
+          if (cardAtPos) {
+            newPositions.set(pos + 1, { suit: cardAtPos.suit, rank: cardAtPos.rank });
+          }
+        }
+        // 2. Card at 52 moves to N (if any)
+        const cardAt52 = newDeck.find(c => c.position === 52);
+        if (cardAt52) {
+          newPositions.set(newPosition, { suit: cardAt52.suit, rank: cardAt52.rank });
+        }
+        // 3. Cards before N (positions 1 to N-1) keep their positions (unless overwritten)
+        for (let pos = 1; pos < newPosition; pos++) {
+          if (!newPositions.has(pos)) {
+            const cardAtPos = newDeck.find(c => c.position === pos);
+            if (cardAtPos) {
+              newPositions.set(pos, { suit: cardAtPos.suit, rank: cardAtPos.rank });
+            }
+          }
+        }
+        // 4. Place the dragged card at N
+        newPositions.set(newPosition, { suit: card.suit, rank: card.rank });
+
+        // Apply all the new positions
+        for (const [position, cardData] of newPositions) {
+          const cardToUpdate = newDeck.find(
+            c => c.suit === cardData.suit && c.rank === cardData.rank
+          );
+          if (cardToUpdate) {
+            const cardIndex = newDeck.findIndex(c => c === cardToUpdate);
+            newDeck[cardIndex] = { ...cardData, position };
+          }
+        }
+      } else {
+        // If the position is not occupied, just place the card there
+        newDeck[cardIndex] = { suit: card.suit, rank: card.rank, position: newPosition };
+      }
+
       return newDeck;
     });
   };
@@ -79,9 +131,40 @@ function App() {
     setDeck((prevDeck) => {
       const newDeck = [...prevDeck];
       const card = newDeck[cardIndex];
-      if (!card) return prevDeck;
+      if (!card || card.position === null) return prevDeck;
       
+      const removedPosition = card.position;
       newDeck[cardIndex] = { suit: card.suit, rank: card.rank, position: null };
+
+      // Get all positioned cards after the removed position
+      const cardsToShift = newDeck
+        .filter(c => c.position !== null && c.position > removedPosition)
+        .sort((a, b) => (a.position || 0) - (b.position || 0));
+
+      // Create a temporary array to store the new positions
+      const newPositions = new Map<number, { suit: Suit; rank: Rank }>();
+
+      // Calculate new positions for all cards that need to shift
+      for (const cardToShift of cardsToShift) {
+        const currentPosition = cardToShift.position || 0;
+        let newPosition = currentPosition - 1;
+        if (newPosition < 1) {
+          newPosition = 52;
+        }
+        newPositions.set(newPosition, { suit: cardToShift.suit, rank: cardToShift.rank });
+      }
+
+      // Apply all the new positions
+      for (const [position, cardData] of newPositions) {
+        const cardToUpdate = newDeck.find(
+          c => c.suit === cardData.suit && c.rank === cardData.rank
+        );
+        if (cardToUpdate) {
+          const cardIndex = newDeck.findIndex(c => c === cardToUpdate);
+          newDeck[cardIndex] = { ...cardData, position };
+        }
+      }
+
       return newDeck;
     });
   };
@@ -91,6 +174,48 @@ function App() {
     setDeck((prevDeck) =>
       prevDeck.map((card) => ({ ...card, position: null }))
     );
+  };
+
+  // Drag and drop handlers
+  const handleDragStart = (e: React.DragEvent, card: Card) => {
+    e.dataTransfer.setData('text/plain', JSON.stringify(card));
+    // Add dragging class to the card being dragged
+    const target = e.target as HTMLElement;
+    target.classList.add('dragging');
+  };
+
+  const handleDragEnd = (e: React.DragEvent) => {
+    // Remove dragging class
+    const target = e.target as HTMLElement;
+    target.classList.remove('dragging');
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    const target = e.currentTarget as HTMLElement;
+    target.classList.add('drag-over');
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    const target = e.currentTarget as HTMLElement;
+    target.classList.remove('drag-over');
+  };
+
+  const handleDrop = (e: React.DragEvent, targetPosition: number | null) => {
+    e.preventDefault();
+    const target = e.currentTarget as HTMLElement;
+    target.classList.remove('drag-over');
+
+    const cardData = JSON.parse(e.dataTransfer.getData('text/plain')) as Card;
+    const cardIndex = deck.findIndex(
+      (c) => c.suit === cardData.suit && c.rank === cardData.rank
+    );
+
+    if (targetPosition === null) {
+      returnCardToPool(cardIndex);
+    } else {
+      moveCardToPosition(cardIndex, targetPosition);
+    }
   };
 
   // Get cards in pool and positioned cards
@@ -107,31 +232,21 @@ function App() {
         {/* Card Pool Section */}
         <div className="pool-section">
           <h2>Card Pool</h2>
-          <div className="deck-container">
+          <div 
+            className="deck-container"
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={(e) => handleDrop(e, null)}
+          >
             {poolCards.map((card) => (
               <div
                 key={`${card.suit}-${card.rank}`}
                 className={`card ${
                   card.suit === "♥" || card.suit === "♦" ? "red" : "black"
                 }`}
-                onClick={() => {
-                  // Find first available position
-                  const firstAvailablePosition = Array.from(
-                    { length: 52 },
-                    (_, i) => i + 1
-                  ).find(
-                    (pos) =>
-                      !deck.some((c) => c.position === pos)
-                  );
-                  if (firstAvailablePosition !== undefined) {
-                    moveCardToPosition(
-                      deck.findIndex(
-                        (c) => c.suit === card.suit && c.rank === card.rank
-                      ),
-                      firstAvailablePosition
-                    );
-                  }
-                }}
+                draggable
+                onDragStart={(e) => handleDragStart(e, card)}
+                onDragEnd={handleDragEnd}
               >
                 <div className="card-content">
                   <span className="rank">{card.rank}</span>
@@ -161,19 +276,18 @@ function App() {
                 <div
                   key={position}
                   className={`position-slot ${card ? "filled" : "empty"}`}
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={(e) => handleDrop(e, position)}
                 >
                   {card ? (
                     <div
                       className={`card ${
                         card.suit === "♥" || card.suit === "♦" ? "red" : "black"
                       }`}
-                      onClick={() =>
-                        returnCardToPool(
-                          deck.findIndex(
-                            (c) => c.suit === card.suit && c.rank === card.rank
-                          )
-                        )
-                      }
+                      draggable
+                      onDragStart={(e) => handleDragStart(e, card)}
+                      onDragEnd={handleDragEnd}
                     >
                       <div className="card-content">
                         <span className="rank">{card.rank}</span>

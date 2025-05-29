@@ -42,141 +42,153 @@
 }
 
 .poker-app {
-  width: 100%;
+  padding: 20px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 0.5rem;
-  box-sizing: border-box;
 }
 
 .app-container {
   display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
+  gap: 20px;
+  margin-top: 20px;
 }
 
 .pool-section,
 .position-section {
-  width: 100%;
-  padding: 0.25rem;
-}
-
-.pool-section h2,
-.position-section h2 {
-  text-align: center;
-  color: #333;
-  margin-bottom: 0.25rem;
-  font-size: 1rem;
+  flex: 1;
 }
 
 .deck-container {
   display: grid;
-  grid-template-columns: repeat(13, 1fr);
-  gap: 0.15rem;
-  margin-top: 0.25rem;
+  grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+  gap: 10px;
+  padding: 15px;
+  background: #f5f5f5;
+  border-radius: 8px;
+  min-height: 200px;
 }
 
 .card {
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  padding: 0.1rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  aspect-ratio: 2.5/3.5;
   background: white;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
-  transition: transform 0.2s;
-  aspect-ratio: 3/4;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 5px;
+  cursor: grab;
+  user-select: none;
+  position: relative;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.card:active {
+  cursor: grabbing;
+}
+
+.card.dragging {
+  opacity: 0.5;
+}
+
+.card.red {
+  color: #d40000;
+}
+
+.card.black {
+  color: #000;
 }
 
 .card-content {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 0.1rem;
+  justify-content: center;
+  height: 100%;
 }
 
 .rank {
-  font-size: 0.7rem;
+  font-size: 1.2em;
   font-weight: bold;
 }
 
 .suit {
-  font-size: 0.9rem;
-}
-
-.red {
-  color: #ff0000;
-}
-
-.black {
-  color: #000000;
+  font-size: 1.5em;
 }
 
 .position-slot {
-  border: 1px dashed #ccc;
-  border-radius: 4px;
-  aspect-ratio: 3/4;
+  position: relative;
+  width: 60px;
+  height: 84px;
+  aspect-ratio: 2.5/3.5;
+  border: 2px dashed #ccc;
+  border-radius: 5px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f8f8f8;
+  background: rgba(255, 255, 255, 0.5);
+  transition: background-color 0.2s;
+}
+
+.position-slot:hover {
+  background: rgba(255, 255, 255, 0.8);
 }
 
 .position-slot.filled {
-  border: none;
-  background: none;
+  border-style: solid;
+  border-color: #4CAF50;
 }
 
 .empty-slot {
   color: #999;
-  font-size: 0.5rem;
+  font-size: 0.8em;
 }
 
 .position-number {
-  font-size: 0.4rem;
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  font-size: 0.7em;
   color: #666;
-  margin-top: 0.1rem;
 }
 
-h1 {
-  text-align: center;
-  color: #333;
-  margin-bottom: 0.5rem;
-  font-size: 1.2rem;
+.clear-all-button {
+  padding: 8px 16px;
+  background: #f44336;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+}
+
+.clear-all-button:hover {
+  background: #d32f2f;
+}
+
+.clear-all-button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
 }
 
 .position-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.25rem;
+  margin-bottom: 15px;
 }
 
-.clear-all-button {
-  background-color: #ff4444;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 0.25rem 0.5rem;
-  font-size: 0.8rem;
-  cursor: pointer;
-  transition: background-color 0.2s;
+/* Drag and drop visual feedback */
+.deck-container.drag-over {
+  background: #e3f2fd;
 }
 
-.clear-all-button:hover:not(:disabled) {
-  background-color: #ff0000;
-}
-
-.clear-all-button:disabled {
-  background-color: #cccccc;
-  cursor: not-allowed;
+.position-slot.drag-over {
+  background: #e8f5e9;
+  border-color: #4CAF50;
 }
 
 /* Media queries for different screen sizes */
@@ -209,5 +221,82 @@ h1 {
 
   .suit {
     font-size: 0.9rem;
+  }
+}
+
+.position-section .deck-container {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 10px;
+  padding: 15px;
+  background: #f5f5f5;
+  border-radius: 8px;
+  min-height: 200px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.pool-section .deck-container {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 10px;
+  padding: 15px;
+  background: #f5f5f5;
+  border-radius: 8px;
+  min-height: 200px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+@media (max-width: 700px) {
+  .position-section .deck-container,
+  .pool-section .deck-container {
+    grid-template-columns: repeat(5, 1fr);
+    max-width: 100vw;
+    padding: 8px;
+    gap: 10px;
+  }
+  .position-slot,
+  .card {
+    width: 40px;
+    height: 56px;
+    min-width: 0;
+    min-height: 0;
+    font-size: 0.9em;
+    padding: 6px;
+    box-sizing: content-box;
+    touch-action: none;
+  }
+  .card {
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+  .card.dragging {
+    box-shadow: 0 0 12px 4px #2196f3;
+    z-index: 10;
+    transform: scale(1.15);
+    opacity: 0.85;
+  }
+  .position-slot.drag-over {
+    background: #e3f2fd;
+    border-color: #2196f3;
+    box-shadow: 0 0 8px 2px #2196f3;
+  }
+}
+
+@media (max-width: 400px) {
+  .position-section .deck-container,
+  .pool-section .deck-container {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+    padding: 2px;
+  }
+  .position-slot,
+  .card {
+    width: 28px;
+    height: 38px;
+    font-size: 0.7em;
+    padding: 4px;
   }
 }
